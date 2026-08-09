@@ -9,19 +9,19 @@ _You are in charge. Every box below is a **suggestion**, not a gate: run any, sk
 
 ## At a glance
 
-| #   | Feature                          | Phase      | Status  |
-| --- | -------------------------------- | ---------- | ------- |
-| 1   | Stack & architecture             | Foundation | done    |
-| 2   | Coding standards & tooling       | Foundation | done    |
-| 3   | Data model                       | Foundation | planned |
-| 4   | Movie catalog integration        | Foundation | planned |
-| 5   | Design system & UI foundation    | Foundation | planned |
-| 6   | Product analytics foundation     | Foundation | planned |
-| 7   | Core discovery loop              | Slice 1    | planned |
-| 8   | Letterboxd CSV import onboarding | Slice 2    | planned |
-| 9   | Vibe search                      | Slice 3    | planned |
-| 10  | Account & privacy settings       | Slice 4    | planned |
-| 11  | Public landing page & SEO        | Slice 5    | planned |
+| #   | Feature                          | Phase      | Status      |
+| --- | -------------------------------- | ---------- | ----------- |
+| 1   | Stack & architecture             | Foundation | done        |
+| 2   | Coding standards & tooling       | Foundation | done        |
+| 3   | Data model                       | Foundation | in-progress |
+| 4   | Movie catalog integration        | Foundation | planned     |
+| 5   | Design system & UI foundation    | Foundation | planned     |
+| 6   | Product analytics foundation     | Foundation | planned     |
+| 7   | Core discovery loop              | Slice 1    | planned     |
+| 8   | Letterboxd CSV import onboarding | Slice 2    | planned     |
+| 9   | Vibe search                      | Slice 3    | planned     |
+| 10  | Account & privacy settings       | Slice 4    | planned     |
+| 11  | Public landing page & SEO        | Slice 5    | planned     |
 
 ## Foundations
 
@@ -43,12 +43,19 @@ Capture conventions, then install lint, format, and pre-commit enforcement from 
 - [x] Capture conventions + tooling choices: `/audit`
 - [x] Install lint, format, and pre-commit enforcement: `/develop tooling` · code in repo root (`eslint.config.mjs`, `.prettierrc.json`, `.prettierignore`, `.husky/pre-commit`, `package.json`)
 
-### 3. Data model · needs a decision
+### 3. Data model
 
 Core entities every feature builds on: users, movie catalog cache, ratings, swipes, imports, feed items, and recommendation reasons.
 **Done when:** entities and relationships support onboarding (both paths), the feed, and vibe search without a breaking migration.
 
-- [ ] Design it (spec): `/architect data model`
+- [x] Design it (spec): `/architect data model` · spec [0002](../specs/0002-data-model/index.md)
+- [x] Build it: `/develop data model` · code in `supabase/migrations/`, `src/db/`, `src/shared/result.ts`, `src/app/actions/movies.ts`, `drizzle.config.ts`
+  - [x] Connect Drizzle ORM to Supabase Postgres (`DATABASE_URL`/`DIRECT_URL`), satisfies AC-8
+  - [x] Migrate the six core tables by hand written SQL (profiles, movies, ratings, imports, import_rows, feed_items) with their constraints and cascade rules, plus the pgvector embedding column, satisfies AC-1, AC-2, AC-3, AC-4, AC-5, AC-6
+  - [x] Enable RLS deny by default with owner scoped policies and foreign key indexes on all six tables, satisfies AC-7
+  - [x] Generate Drizzle types, the null-to-undefined data access boundary, and a tracer bullet Server Action proving the pipe end to end, satisfies AC-8
+- [ ] Verify it: `/check verify data model`
+- [ ] Test it: `/test data model`
 
 ### 4. Movie catalog integration · needs a decision
 

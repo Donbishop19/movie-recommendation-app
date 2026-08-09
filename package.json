@@ -11,7 +11,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
-    "prepare": "husky"
+    "prepare": "husky",
+    "db:pull": "drizzle-kit pull"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
@@ -22,7 +23,9 @@
     ]
   },
   "dependencies": {
+    "drizzle-orm": "^0.45.2",
     "next": "16.3.0",
+    "postgres": "^3.4.9",
     "react": "19.2.8",
     "react-dom": "19.2.8"
   },
@@ -30,12 +33,14 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "drizzle-kit": "^0.31.10",
     "eslint": "^9",
     "eslint-config-next": "16.3.0",
     "eslint-config-prettier": "^10.1.8",
     "husky": "^9.1.7",
     "lint-staged": "^17.3.0",
     "prettier": "^3.9.6",
+    "tsx": "^4.23.11",
     "typescript": "^5"
   },
   "packageManager": "pnpm@11.20.0"
