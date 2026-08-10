@@ -9,19 +9,19 @@ _You are in charge. Every box below is a **suggestion**, not a gate: run any, sk
 
 ## At a glance
 
-| #   | Feature                          | Phase      | Status  |
-| --- | -------------------------------- | ---------- | ------- |
-| 1   | Stack & architecture             | Foundation | done    |
-| 2   | Coding standards & tooling       | Foundation | done    |
-| 3   | Data model                       | Foundation | done    |
-| 4   | Movie catalog integration        | Foundation | done    |
-| 5   | Design system & UI foundation    | Foundation | planned |
-| 6   | Product analytics foundation     | Foundation | planned |
-| 7   | Core discovery loop              | Slice 1    | planned |
-| 8   | Letterboxd CSV import onboarding | Slice 2    | planned |
-| 9   | Vibe search                      | Slice 3    | planned |
-| 10  | Account & privacy settings       | Slice 4    | planned |
-| 11  | Public landing page & SEO        | Slice 5    | planned |
+| #   | Feature                          | Phase      | Status      |
+| --- | -------------------------------- | ---------- | ----------- |
+| 1   | Stack & architecture             | Foundation | done        |
+| 2   | Coding standards & tooling       | Foundation | done        |
+| 3   | Data model                       | Foundation | done        |
+| 4   | Movie catalog integration        | Foundation | done        |
+| 5   | Design system & UI foundation    | Foundation | in-progress |
+| 6   | Product analytics foundation     | Foundation | planned     |
+| 7   | Core discovery loop              | Slice 1    | planned     |
+| 8   | Letterboxd CSV import onboarding | Slice 2    | planned     |
+| 9   | Vibe search                      | Slice 3    | planned     |
+| 10  | Account & privacy settings       | Slice 4    | planned     |
+| 11  | Public landing page & SEO        | Slice 5    | planned     |
 
 ## Foundations
 
@@ -71,12 +71,19 @@ How rich movie metadata (posters, genres, cast, synopsis, ratings) gets sourced 
 - [x] Verify it: `/check verify movie catalog integration`
 - [ ] Test it: `/test movie catalog integration` (skipped on the engineer's call after a clean verify)
 
-### 5. Design system & UI foundation · needs a decision
+### 5. Design system & UI foundation
 
 Visual language, layout primitives, and base components so onboarding, the feed, and search feel cohesive.
 **Done when:** `design.md` covers type/color/spacing/components, base components handle focus and keyboard, and the WCAG AA baseline is documented.
 
-- [ ] Design it (spec): `/architect design system & UI foundation`
+- [x] Design it (spec): `/architect design system & UI foundation` · spec [0004](../specs/0004-design-system-ui-foundation/index.md)
+- [x] Build it: `/develop design system & UI foundation` · code in `src/design-system/`, `src/app/layout.tsx`, `src/app/page.tsx`, `src/app/dev/components/`, `design.md`, `components.json`, `postcss.config.mjs`
+  - [x] Tailwind CSS v4 + shadcn/ui setup, design tokens (color/type/spacing/radius), and root layout wiring, satisfies AC-1, AC-2
+  - [x] Core interactive and Layout/structure components (button, input, select, checkbox, radio, label, container, stack, card), satisfies AC-3, AC-4, AC-5, AC-6
+  - [x] Navigation and Feedback/overlays components (header/nav, tabs, link, dialog, toast, spinner, badge), plus reduced motion handling, satisfies AC-3, AC-4, AC-7, AC-8
+  - [x] `/dev/components` showcase route, `design.md`, and removal of the create-next-app boilerplate, satisfies AC-9, AC-10, AC-11
+- [ ] Verify it: `/check verify design system & UI foundation`
+- [ ] Test it: `/test design system & UI foundation`
 
 ### 6. Product analytics foundation · needs a decision
 
