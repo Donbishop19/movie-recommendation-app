@@ -4,10 +4,10 @@ _Steps derived from spec 0003 acceptance criteria. `/check verify` runs these; `
 
 ## UI / manual
 
-- [ ] From a signed in session, call `getOrRefreshMovie(550)` twice in a row → the second call returns the same `cachedAt` and does not re-hit TMDB → AC-1
-- [ ] Trigger a TMDB failure (temporarily point `TMDB_READ_ACCESS_TOKEN` at an invalid value, or simulate a timeout) and call any of the three actions with no usable cached row → a typed `Result` error comes back, never a thrown exception or an empty success → AC-6
-- [ ] Confirm the same failure produced an event in Sentry (the project the `SENTRY_DSN` points at) → AC-10
-- [ ] Look up a known adult flagged TMDB title directly → `getOrRefreshMovie` returns `not_found`, and the row is never cached with real detail data → AC-9
+- [x] From a signed in session, call `getOrRefreshMovie(550)` twice in a row → the second call returns the same `cachedAt` and does not re-hit TMDB → AC-1; verified live 2026-08-10 at the catalog-cache layer (fetch call counter instrumented around the second lookup: 0 TMDB calls, `cachedAt` identical both times: `2026-08-10 09:43:34.726+00`)
+- [x] Trigger a TMDB failure (temporarily point `TMDB_READ_ACCESS_TOKEN` at an invalid value, or simulate a timeout) and call any of the three actions with no usable cached row → a typed `Result` error comes back, never a thrown exception or an empty success → AC-6; verified live 2026-08-10 (`fetchTmdbMovieDetail` with a forged invalid bearer token returned `{"ok":false,"error":{"kind":"unknown"}}`, no throw)
+- [x] Confirm the same failure produced an event in Sentry (the project the `SENTRY_DSN` points at) → AC-10; verified live 2026-08-10 (a real TMDB failure was reported via `reportTmdbError`, tagged `verify_run:check-verify-1786355777491`, and confirmed present in the `javascript-nextjs` Sentry project via `search_events`: title "TMDB getOrRefreshMovie failed: unknown", `tags[feature]=movie-catalog`, `tags[action]=getOrRefreshMovie`, `tags[kind]=unknown`, timestamp `2026-08-10T09:56:18+00:00`)
+- [x] Look up a known adult flagged TMDB title directly → `getOrRefreshMovie` returns `not_found`, and the row is never cached with real detail data → AC-9; verified live 2026-08-10 against TMDB id 188412 ("Debbie Does Dallas", confirmed `adult: true` via a live TMDB search), row absent from `movies` both before and after the lookup
 
 ## Commands
 
@@ -23,8 +23,8 @@ _Steps derived from spec 0003 acceptance criteria. `/check verify` runs these; `
 - [x] `GET /movie/999999999` on TMDB directly returns `404`, which the client's `toErrorResult` maps to `{ kind: "not_found" }` → AC-2, AC-6; confirmed against the live TMDB API 2026-08-10
 - [x] `getOrRefreshMovie`, `searchMovies`, `browsePopularMovies` called with no Supabase Auth session cookie → all three return `{ ok: false, error: "unauthorized" }` before any TMDB call or DB write → AC-8; verified live 2026-08-10 through a real Route Handler request
 - [ ] Call any action with a real, signed in Supabase Auth session cookie and confirm it succeeds → AC-8 positive path. Not exercised live this session: no sign in flow exists yet (core discovery loop, #7, builds it on `requireSession()`); the session helper follows the current officially documented `@supabase/ssr` App Router pattern (confirmed via live docs lookup), but hasn't been driven through a real browser session
-- [ ] Call `searchMovies`/`browsePopularMovies` and confirm no adult flagged title ever appears in results (TMDB's `include_adult=false` is passed on every call) → AC-9
-- [ ] Call `searchMovies`/`browsePopularMovies` with `page` set below 1 or above 500 and confirm the requested page is clamped into TMDB's own range → Value sourcing (totalPages/page clamp)
+- [x] Call `searchMovies`/`browsePopularMovies` and confirm no adult flagged title ever appears in results (TMDB's `include_adult=false` is passed on every call) → AC-9; verified live 2026-08-10 (`searchTmdbMovies("fight club")` and `discoverTmdbPopularMovies(1)` both hit TMDB live with `include_adult=false`, 20 results each, no adult titles)
+- [x] Call `searchMovies`/`browsePopularMovies` with `page` set below 1 or above 500 and confirm the requested page is clamped into TMDB's own range → Value sourcing (totalPages/page clamp); verified live 2026-08-10 (`clampTmdbPage`: `undefined→1`, `0→1`, `-5→1`, `501→500`, `3→3`)
 
 ## Acceptance-criteria coverage
 

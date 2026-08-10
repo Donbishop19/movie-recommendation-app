@@ -1,7 +1,7 @@
 # 0003. Movie catalog integration
 
 **Date**: 2026-08-10
-**Status**: In Progress
+**Status**: Accepted
 
 ## Summary
 

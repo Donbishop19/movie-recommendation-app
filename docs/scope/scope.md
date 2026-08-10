@@ -9,19 +9,19 @@ _You are in charge. Every box below is a **suggestion**, not a gate: run any, sk
 
 ## At a glance
 
-| #   | Feature                          | Phase      | Status      |
-| --- | -------------------------------- | ---------- | ----------- |
-| 1   | Stack & architecture             | Foundation | done        |
-| 2   | Coding standards & tooling       | Foundation | done        |
-| 3   | Data model                       | Foundation | done        |
-| 4   | Movie catalog integration        | Foundation | in-progress |
-| 5   | Design system & UI foundation    | Foundation | planned     |
-| 6   | Product analytics foundation     | Foundation | planned     |
-| 7   | Core discovery loop              | Slice 1    | planned     |
-| 8   | Letterboxd CSV import onboarding | Slice 2    | planned     |
-| 9   | Vibe search                      | Slice 3    | planned     |
-| 10  | Account & privacy settings       | Slice 4    | planned     |
-| 11  | Public landing page & SEO        | Slice 5    | planned     |
+| #   | Feature                          | Phase      | Status  |
+| --- | -------------------------------- | ---------- | ------- |
+| 1   | Stack & architecture             | Foundation | done    |
+| 2   | Coding standards & tooling       | Foundation | done    |
+| 3   | Data model                       | Foundation | done    |
+| 4   | Movie catalog integration        | Foundation | done    |
+| 5   | Design system & UI foundation    | Foundation | planned |
+| 6   | Product analytics foundation     | Foundation | planned |
+| 7   | Core discovery loop              | Slice 1    | planned |
+| 8   | Letterboxd CSV import onboarding | Slice 2    | planned |
+| 9   | Vibe search                      | Slice 3    | planned |
+| 10  | Account & privacy settings       | Slice 4    | planned |
+| 11  | Public landing page & SEO        | Slice 5    | planned |
 
 ## Foundations
 
@@ -68,8 +68,8 @@ How rich movie metadata (posters, genres, cast, synopsis, ratings) gets sourced 
   - [x] Direct lookup (`getOrRefreshMovie`) with a real detail upsert, satisfies AC-1, AC-2, AC-3, AC-6, AC-8, AC-9, AC-10
   - [x] Search and browse with the list upsert, satisfies AC-4, AC-5, AC-6, AC-8, AC-9, AC-10
   - [x] Scheduled staleness refresh job (Route Handler + `pg_cron`/`pg_net` migration), satisfies AC-7, AC-10, AC-11
-- [ ] Verify it: `/check verify movie catalog integration`
-- [ ] Test it: `/test movie catalog integration`
+- [x] Verify it: `/check verify movie catalog integration`
+- [ ] Test it: `/test movie catalog integration` (skipped on the engineer's call after a clean verify)
 
 ### 5. Design system & UI foundation · needs a decision
 
