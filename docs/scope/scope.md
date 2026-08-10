@@ -13,8 +13,8 @@ _You are in charge. Every box below is a **suggestion**, not a gate: run any, sk
 | --- | -------------------------------- | ---------- | ----------- |
 | 1   | Stack & architecture             | Foundation | done        |
 | 2   | Coding standards & tooling       | Foundation | done        |
-| 3   | Data model                       | Foundation | in-progress |
-| 4   | Movie catalog integration        | Foundation | planned     |
+| 3   | Data model                       | Foundation | done        |
+| 4   | Movie catalog integration        | Foundation | in-progress |
 | 5   | Design system & UI foundation    | Foundation | planned     |
 | 6   | Product analytics foundation     | Foundation | planned     |
 | 7   | Core discovery loop              | Slice 1    | planned     |
@@ -54,15 +54,22 @@ Core entities every feature builds on: users, movie catalog cache, ratings, swip
   - [x] Migrate the six core tables by hand written SQL (profiles, movies, ratings, imports, import_rows, feed_items) with their constraints and cascade rules, plus the pgvector embedding column, satisfies AC-1, AC-2, AC-3, AC-4, AC-5, AC-6
   - [x] Enable RLS deny by default with owner scoped policies and foreign key indexes on all six tables, satisfies AC-7
   - [x] Generate Drizzle types, the null-to-undefined data access boundary, and a tracer bullet Server Action proving the pipe end to end, satisfies AC-8
-- [ ] Verify it: `/check verify data model`
-- [ ] Test it: `/test data model`
+- [x] Verify it: `/check verify data model`
+- [x] Test it: `/test data model`
 
-### 4. Movie catalog integration · needs a decision
+### 4. Movie catalog integration
 
 How rich movie metadata (posters, genres, cast, synopsis, ratings) gets sourced and kept fresh; every later feature displays or reasons over this data.
 **Done when:** a movie can be looked up with full metadata, and the sync/caching approach is recorded.
 
-- [ ] Design it (spec): `/architect movie catalog integration`
+- [x] Design it (spec): `/architect movie catalog integration` · spec [0003](../specs/0003-movie-catalog-integration/index.md)
+- [x] Build it: `/develop movie catalog integration` · code in `src/movies/`, `src/auth/`, `src/observability/`, `src/app/actions/movies.ts`, `src/app/api/jobs/refresh-catalog/`, `src/instrumentation.ts`, `sentry.server.config.ts`, `sentry.edge.config.ts`, `supabase/migrations/`
+  - [x] TMDB client and Supabase Auth session guard, satisfies AC-6, AC-8, AC-10
+  - [x] Direct lookup (`getOrRefreshMovie`) with a real detail upsert, satisfies AC-1, AC-2, AC-3, AC-6, AC-8, AC-9, AC-10
+  - [x] Search and browse with the list upsert, satisfies AC-4, AC-5, AC-6, AC-8, AC-9, AC-10
+  - [x] Scheduled staleness refresh job (Route Handler + `pg_cron`/`pg_net` migration), satisfies AC-7, AC-10, AC-11
+- [ ] Verify it: `/check verify movie catalog integration`
+- [ ] Test it: `/test movie catalog integration`
 
 ### 5. Design system & UI foundation · needs a decision
 

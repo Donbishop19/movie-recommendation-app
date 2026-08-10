@@ -1,73 +1,132 @@
 "use server";
 
-import { eq, and } from "drizzle-orm";
-import { db } from "@/db/client";
-import { movies } from "@/db/drizzle/schema";
-import { toUndefined } from "@/db/nullable";
+import * as Sentry from "@sentry/nextjs";
+import { requireSession } from "@/auth/session";
 import { ok, err, type Result, type DataError } from "@/shared/result";
+import {
+  fetchTmdbMovieDetail,
+  searchTmdbMovies,
+  discoverTmdbPopularMovies,
+  clampTmdbPage,
+  reportTmdbError,
+} from "@/movies/tmdb-client";
+import {
+  detailUpsert,
+  listUpsert,
+  findCachedByTmdbId,
+  isFreshDetail,
+  toMovie,
+  type Movie,
+} from "@/movies/catalog-cache";
 
-export type MovieCacheInput = {
-  readonly externalSource: string;
-  readonly externalId: string;
-  readonly title: string;
+export type { Movie } from "@/movies/catalog-cache";
+
+export type MovieList = {
+  readonly movies: ReadonlyArray<Movie>;
+  readonly totalPages: number;
 };
-
-export type Movie = {
-  readonly id: string;
-  readonly externalSource: string;
-  readonly externalId: string;
-  readonly title: string;
-  readonly synopsis: string | undefined;
-  readonly posterUrl: string | undefined;
-  readonly cachedAt: string;
-};
-
-function toMovie(row: typeof movies.$inferSelect): Movie {
-  return {
-    id: row.id,
-    externalSource: row.externalSource,
-    externalId: row.externalId,
-    title: row.title,
-    synopsis: toUndefined(row.synopsis),
-    posterUrl: toUndefined(row.posterUrl),
-    cachedAt: row.cachedAt,
-  };
-}
 
 /**
- * Tracer bullet for the data model: reads and writes the `movies` cache through Drizzle
- * end to end. Returns the existing row on a cache hit, otherwise caches and returns a new one.
+ * Looks up one movie by its TMDB id. Returns a cached detail hit less than 7 days old as
+ * is; otherwise fetches full details (including cast) from TMDB, upserts, and returns the
+ * fresh data. Adult flagged titles are treated as not found and never cached.
  */
-export async function getOrCacheMovieAction(
-  input: MovieCacheInput,
+export async function getOrRefreshMovie(
+  tmdbId: number,
 ): Promise<Result<Movie, DataError>> {
-  try {
-    const existing = await db.query.movies.findFirst({
-      where: and(
-        eq(movies.externalSource, input.externalSource),
-        eq(movies.externalId, input.externalId),
-      ),
-    });
+  const session = await requireSession();
+  if (!session.ok) {
+    return session;
+  }
 
-    if (existing) {
+  try {
+    const existing = await findCachedByTmdbId(tmdbId);
+    if (existing && isFreshDetail(existing)) {
       return ok(toMovie(existing));
     }
 
-    const [created] = await db
-      .insert(movies)
-      .values({
-        externalSource: input.externalSource,
-        externalId: input.externalId,
-        title: input.title,
-      })
-      .returning();
+    const detailResult = await fetchTmdbMovieDetail(tmdbId);
+    if (!detailResult.ok) {
+      reportTmdbError("getOrRefreshMovie", detailResult.error);
+      return err(
+        detailResult.error.kind === "not_found" ? "not_found" : "unknown",
+      );
+    }
 
-    if (!created) {
+    if (detailResult.value.adult) {
+      return err("not_found");
+    }
+
+    const row = await detailUpsert(tmdbId, detailResult.value);
+    return ok(toMovie(row));
+  } catch (error) {
+    Sentry.captureException(error);
+    return err("unknown");
+  }
+}
+
+/**
+ * Searches TMDB's live catalog by title, caching every result through the list upsert.
+ * Never reads the local cache first; always returns TMDB's own relevance ranking.
+ */
+export async function searchMovies(
+  query: string,
+  year?: number,
+  page?: number,
+): Promise<Result<MovieList, DataError>> {
+  const session = await requireSession();
+  if (!session.ok) {
+    return session;
+  }
+
+  try {
+    const result = await searchTmdbMovies(query, year, clampTmdbPage(page));
+    if (!result.ok) {
+      reportTmdbError("searchMovies", result.error);
       return err("unknown");
     }
 
-    return ok(toMovie(created));
-  } catch {
+    const rows = await Promise.all(
+      result.value.results.map((item) => listUpsert(item.id, item)),
+    );
+    return ok({
+      movies: rows.map(toMovie),
+      totalPages: result.value.totalPages,
+    });
+  } catch (error) {
+    Sentry.captureException(error);
+    return err("unknown");
+  }
+}
+
+/**
+ * One page of TMDB's popularity ranked movies, caching every result through the list
+ * upsert. Defaults to page 1.
+ */
+export async function browsePopularMovies(
+  page?: number,
+): Promise<Result<MovieList, DataError>> {
+  const session = await requireSession();
+  if (!session.ok) {
+    return session;
+  }
+
+  try {
+    const result = await discoverTmdbPopularMovies(clampTmdbPage(page));
+    if (!result.ok) {
+      reportTmdbError("browsePopularMovies", result.error);
+      return err("unknown");
+    }
+
+    const rows = await Promise.all(
+      result.value.results.map((item) => listUpsert(item.id, item)),
+    );
+    return ok({
+      movies: rows.map(toMovie),
+      totalPages: result.value.totalPages,
+    });
+  } catch (error) {
+    Sentry.captureException(error);
     return err("unknown");
   }
 }
