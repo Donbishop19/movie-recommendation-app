@@ -9,19 +9,19 @@ _You are in charge. Every box below is a **suggestion**, not a gate: run any, sk
 
 ## At a glance
 
-| #   | Feature                          | Phase      | Status      |
-| --- | -------------------------------- | ---------- | ----------- |
-| 1   | Stack & architecture             | Foundation | done        |
-| 2   | Coding standards & tooling       | Foundation | done        |
-| 3   | Data model                       | Foundation | done        |
-| 4   | Movie catalog integration        | Foundation | done        |
-| 5   | Design system & UI foundation    | Foundation | in-progress |
-| 6   | Product analytics foundation     | Foundation | planned     |
-| 7   | Core discovery loop              | Slice 1    | planned     |
-| 8   | Letterboxd CSV import onboarding | Slice 2    | planned     |
-| 9   | Vibe search                      | Slice 3    | planned     |
-| 10  | Account & privacy settings       | Slice 4    | planned     |
-| 11  | Public landing page & SEO        | Slice 5    | planned     |
+| #   | Feature                          | Phase      | Status  |
+| --- | -------------------------------- | ---------- | ------- |
+| 1   | Stack & architecture             | Foundation | done    |
+| 2   | Coding standards & tooling       | Foundation | done    |
+| 3   | Data model                       | Foundation | done    |
+| 4   | Movie catalog integration        | Foundation | done    |
+| 5   | Design system & UI foundation    | Foundation | done    |
+| 6   | Product analytics foundation     | Foundation | planned |
+| 7   | Core discovery loop              | Slice 1    | planned |
+| 8   | Letterboxd CSV import onboarding | Slice 2    | planned |
+| 9   | Vibe search                      | Slice 3    | planned |
+| 10  | Account & privacy settings       | Slice 4    | planned |
+| 11  | Public landing page & SEO        | Slice 5    | planned |
 
 ## Foundations
 
@@ -82,8 +82,8 @@ Visual language, layout primitives, and base components so onboarding, the feed,
   - [x] Core interactive and Layout/structure components (button, input, select, checkbox, radio, label, container, stack, card), satisfies AC-3, AC-4, AC-5, AC-6
   - [x] Navigation and Feedback/overlays components (header/nav, tabs, link, dialog, toast, spinner, badge), plus reduced motion handling, satisfies AC-3, AC-4, AC-7, AC-8
   - [x] `/dev/components` showcase route, `design.md`, and removal of the create-next-app boilerplate, satisfies AC-9, AC-10, AC-11
-- [ ] Verify it: `/check verify design system & UI foundation`
-- [ ] Test it: `/test design system & UI foundation`
+- [x] Verify it: `/check verify design system & UI foundation` (manually verified by the engineer against the running app, not a `/check verify` run)
+- [x] Test it: `/test design system & UI foundation` (manually verified by the engineer against the running app, not a `/test` run)
 
 ### 6. Product analytics foundation · needs a decision
 
