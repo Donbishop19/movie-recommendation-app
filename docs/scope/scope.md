@@ -16,7 +16,7 @@ _You are in charge. Every box below is a **suggestion**, not a gate: run any, sk
 | 3   | Data model                       | Foundation | done    |
 | 4   | Movie catalog integration        | Foundation | done    |
 | 5   | Design system & UI foundation    | Foundation | done    |
-| 6   | Product analytics foundation     | Foundation | planned |
+| 6   | Product analytics foundation     | Foundation | done    |
 | 7   | Core discovery loop              | Slice 1    | planned |
 | 8   | Letterboxd CSV import onboarding | Slice 2    | planned |
 | 9   | Vibe search                      | Slice 3    | planned |
@@ -85,12 +85,19 @@ Visual language, layout primitives, and base components so onboarding, the feed,
 - [x] Verify it: `/check verify design system & UI foundation` (manually verified by the engineer against the running app, not a `/check verify` run)
 - [x] Test it: `/test design system & UI foundation` (manually verified by the engineer against the running app, not a `/test` run)
 
-### 6. Product analytics foundation · needs a decision
+### 6. Product analytics foundation
 
 Event taxonomy and provider so onboarding completion and feed engagement, the chosen success metric, are measurable from day one.
 **Done when:** an event fires end to end (captured and visible) and the core event names (onboarding started/completed, feed viewed, feed item engaged) are recorded.
 
-- [ ] Design it (spec): `/architect product analytics foundation`
+- [x] Design it (spec): `/architect product analytics foundation` · spec [0005](../specs/0005-product-analytics-foundation/index.md)
+- [x] Build it: `/develop product analytics foundation` · code in `src/analytics/`, `src/app/layout.tsx`, `src/app/actions/movies.ts`, `next.config.ts`
+  - [x] SDK setup and the shared typed event map, including the four core events, satisfies AC-2, AC-4, AC-9, AC-10
+  - [x] Server and client capture helpers (fire and forget, autocapture/session replay off), satisfies AC-3, AC-5, AC-7
+  - [x] Reverse proxy (`/ingest`) and the proof event on the movie catalog browse action, satisfies AC-1, AC-6 · proof event fired live 2026-08-11
+  - [ ] Separate PostHog projects for dev/staging vs production, satisfies AC-8 · deferred by engineer choice 2026-08-11: one shared project in use for now, see spec 0005 Follow-up
+- [ ] Verify it: `/check verify product analytics foundation` (skipped on the engineer's call, marked done straight after build)
+- [ ] Test it: `/test product analytics foundation` (skipped on the engineer's call, marked done straight after build)
 
 ## Slice 1: Core discovery loop
 
