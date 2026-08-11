@@ -8,7 +8,7 @@ export type Session = {
 };
 
 /** A Supabase Auth server client bound to the current request's cookies. */
-async function createSessionClient() {
+export async function createSessionClient() {
   const cookieStore = await cookies();
 
   return createServerClient(authEnv.supabaseUrl, authEnv.supabaseAnonKey, {

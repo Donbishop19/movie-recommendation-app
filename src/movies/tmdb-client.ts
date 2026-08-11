@@ -244,6 +244,59 @@ export async function discoverTmdbPopularMovies(
   }
 }
 
+/** TMDB's fixed movie genre id list (`/genre/movie/list`), stable across the catalog. */
+export const TMDB_GENRE_IDS: Readonly<Record<string, number>> = {
+  Action: 28,
+  Adventure: 12,
+  Animation: 16,
+  Comedy: 35,
+  Crime: 80,
+  Documentary: 99,
+  Drama: 18,
+  Family: 10751,
+  Fantasy: 14,
+  History: 36,
+  Horror: 27,
+  Music: 10402,
+  Mystery: 9648,
+  Romance: 10749,
+  "Science Fiction": 878,
+  "TV Movie": 10770,
+  Thriller: 53,
+  War: 10752,
+  Western: 37,
+};
+
+/**
+ * TMDB's popularity ranked discover feed filtered to any of the given genre ids (OR match),
+ * excluding adult content, no retry. Feeds this feature's genre overlap ranking.
+ */
+export async function discoverTmdbMoviesByGenres(
+  genreIds: ReadonlyArray<number>,
+  page: number,
+): Promise<Result<TmdbListResult, TmdbError>> {
+  try {
+    const response = await tmdbFetch("/discover/movie", {
+      sort_by: "popularity.desc",
+      include_adult: "false",
+      with_genres: genreIds.join("|"),
+      page: String(page),
+    });
+
+    if (!response.ok) {
+      return err(await toErrorResult(response));
+    }
+
+    const data = (await response.json()) as TmdbApiListResponse;
+    return ok({
+      results: data.results.map(toListMovie),
+      totalPages: data.total_pages,
+    });
+  } catch {
+    return err({ kind: "transient", retryAfterSeconds: undefined });
+  }
+}
+
 /** Builds TMDB's absolute poster (or cast profile) URL from a relative path. */
 export function toAbsoluteTmdbImageUrl(
   path: string | undefined,
