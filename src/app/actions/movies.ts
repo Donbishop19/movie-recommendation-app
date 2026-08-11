@@ -2,6 +2,7 @@
 
 import * as Sentry from "@sentry/nextjs";
 import { requireSession } from "@/auth/session";
+import { trackServer } from "@/analytics/server";
 import { ok, err, type Result, type DataError } from "@/shared/result";
 import {
   fetchTmdbMovieDetail,
@@ -121,10 +122,12 @@ export async function browsePopularMovies(
     const rows = await Promise.all(
       result.value.results.map((item) => listUpsert(item.id, item)),
     );
-    return ok({
-      movies: rows.map(toMovie),
-      totalPages: result.value.totalPages,
+    const movies = rows.map(toMovie);
+    trackServer("movie_catalog_browsed", session.value.userId, {
+      resultCount: movies.length,
+      page: clampTmdbPage(page),
     });
+    return ok({ movies, totalPages: result.value.totalPages });
   } catch (error) {
     Sentry.captureException(error);
     return err("unknown");
