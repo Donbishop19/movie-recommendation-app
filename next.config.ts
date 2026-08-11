@@ -9,6 +9,17 @@ if (!posthogHost) {
 }
 
 const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "image.tmdb.org",
+        port: "",
+        pathname: "/t/p/**",
+        search: "",
+      },
+    ],
+  },
   // Proxies the client PostHog SDK's requests through this app's own domain (AC-6):
   // the browser never calls PostHog's domain directly, which keeps ad blockers from
   // silently dropping client side events.
