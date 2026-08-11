@@ -42,3 +42,6 @@ next-env.d.ts
 
 # agent tooling cache
 /docs/.agent-cache/
+
+# local agent tool state (settings, locks); durable skills live in .agents/skills/
+/.claude/

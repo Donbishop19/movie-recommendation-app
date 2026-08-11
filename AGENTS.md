@@ -49,6 +49,7 @@ Stored in `docs/specs/`. Format: `docs/specs/NNNN-title.md`.
 - One consistent error handling pattern across every server action and route handler. Validate every required env var at startup; fail loudly if one is missing.
 - Named exports only, no default exports. Naming: kebab case file names, PascalCase components, camelCase functions and variables.
 - Document exported functions, server actions, and route handlers with a short comment. WCAG AA accessibility baseline on all UI.
+- Design system: build all UI to `design.md` (art direction and the maximalist product bar); token values live in CSS.
 - Lint / format: ESLint + Prettier, enforced. Pre-commit: lint, format, and typecheck must all pass before a commit is allowed.
 - Testing: no automated suite yet; verify with typecheck plus manual `/check verify`. `/test` sets up the real runner when it's needed. CI not set up yet.
 - Commit messages: conventional commits (`feat:`, `fix:`, `chore:`, and so on).
@@ -70,9 +71,12 @@ Stored in `docs/specs/`. Format: `docs/specs/NNNN-title.md`.
 - [deploy-to-vercel](.agents/skills/deploy-to-vercel/): `vercel-labs/agent-skills`, deploying and previewing on Vercel
 - [inngest-durable-functions](.agents/skills/inngest-durable-functions/): `inngest/inngest-skills`, durable background jobs and retries
 - [sentry-get-started](.agents/skills/sentry-get-started/): `getsentry/sentry-for-ai`, Sentry error tracking setup
+- [posthog-instrumentation](.agents/skills/posthog-instrumentation/): `posthog/posthog-for-claude`, PostHog event tracking and feature flag instrumentation
 
 ## Context files
 
 <!-- Nested AGENTS.md files are listed here as they are created -->
+
+- [src/analytics/AGENTS.md](src/analytics/AGENTS.md): the PostHog event tracking pipe (typed event map, server/client helpers, ingest proxy)
 
 _Drafted by /audit from the repo, worth a quick human pass. Edit freely: once a line stops matching this draft, later runs treat it as curated and will flag rather than overwrite it._
