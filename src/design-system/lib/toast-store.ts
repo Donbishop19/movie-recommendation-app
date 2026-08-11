@@ -32,6 +32,12 @@ function getSnapshot(): ToastEntry[] {
   return toasts;
 }
 
+const EMPTY_TOASTS: ToastEntry[] = [];
+
+function getServerSnapshot(): ToastEntry[] {
+  return EMPTY_TOASTS;
+}
+
 /** Queues a toast notification. Returns its id, usable with `dismissToast`. */
 export function toast(entry: Omit<ToastEntry, "id">): string {
   const id = crypto.randomUUID();
@@ -47,5 +53,5 @@ export function dismissToast(id: string): void {
 
 /** Subscribes a component (the `Toaster`) to the live toast queue. */
 export function useToasts(): ToastEntry[] {
-  return useSyncExternalStore(subscribe, getSnapshot, () => []);
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }

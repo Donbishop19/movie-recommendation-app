@@ -8,7 +8,7 @@ export function Card({ className, ...props }: ComponentProps<"div">) {
   return (
     <div
       className={cn(
-        "rounded-md border border-border bg-surface text-ink",
+        "rounded-lg border border-border bg-surface text-ink",
         className,
       )}
       {...props}
@@ -50,7 +50,7 @@ export function CardSkeleton({ className, ...props }: ComponentProps<"div">) {
   return (
     <div
       className={cn(
-        "flex flex-col gap-sm rounded-md border border-border bg-surface p-lg",
+        "flex flex-col gap-sm rounded-lg border border-border bg-surface p-lg",
         className,
       )}
       {...props}

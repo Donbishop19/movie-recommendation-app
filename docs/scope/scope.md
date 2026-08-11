@@ -15,7 +15,7 @@ _You are in charge. Every box below is a **suggestion**, not a gate: run any, sk
 | 2   | Coding standards & tooling       | Foundation | done        |
 | 3   | Data model                       | Foundation | done        |
 | 4   | Movie catalog integration        | Foundation | done        |
-| 5   | Design system & UI foundation    | Foundation | done        |
+| 5   | Design system & UI foundation    | Foundation | in-progress |
 | 6   | Product analytics foundation     | Foundation | done        |
 | 7   | Core discovery loop              | Slice 1    | in-progress |
 | 8   | Letterboxd CSV import onboarding | Slice 2    | planned     |
@@ -76,14 +76,15 @@ How rich movie metadata (posters, genres, cast, synopsis, ratings) gets sourced 
 Visual language, layout primitives, and base components so onboarding, the feed, and search feel cohesive.
 **Done when:** `design.md` covers type/color/spacing/components, base components handle focus and keyboard, and the WCAG AA baseline is documented.
 
-- [x] Design it (spec): `/architect design system & UI foundation` · spec [0004](../specs/0004-design-system-ui-foundation/index.md)
-- [x] Build it: `/develop design system & UI foundation` · code in `src/design-system/`, `src/app/layout.tsx`, `src/app/page.tsx`, `src/app/dev/components/`, `design.md`, `components.json`, `postcss.config.mjs`
-  - [x] Tailwind CSS v4 + shadcn/ui setup, design tokens (color/type/spacing/radius), and root layout wiring, satisfies AC-1, AC-2
-  - [x] Core interactive and Layout/structure components (button, input, select, checkbox, radio, label, container, stack, card), satisfies AC-3, AC-4, AC-5, AC-6
-  - [x] Navigation and Feedback/overlays components (header/nav, tabs, link, dialog, toast, spinner, badge), plus reduced motion handling, satisfies AC-3, AC-4, AC-7, AC-8
-  - [x] `/dev/components` showcase route, `design.md`, and removal of the create-next-app boilerplate, satisfies AC-9, AC-10, AC-11
-- [x] Verify it: `/check verify design system & UI foundation` (manually verified by the engineer against the running app, not a `/check verify` run)
-- [x] Test it: `/test design system & UI foundation` (manually verified by the engineer against the running app, not a `/test` run)
+- [x] Design it (spec): `/architect design system & UI foundation` · spec [0004](../specs/0004-design-system-ui-foundation/index.md), superseded by [0007](../specs/0007-mobile-first-streaming-redesign/index.md)
+- [x] Build it: `/develop design system & UI foundation` · code in `src/design-system/`, `src/app/layout.tsx`, `src/app/page.tsx`, `src/app/feed/`, `src/app/onboarding/`, `src/app/dev/components/`, `design.md`
+  - [x] Tailwind CSS v4 + shadcn/ui setup, design tokens, and root layout wiring (spec 0004, now superseded direction)
+  - [x] New hero, tab bar, and poster badge tokens, plus the mobile first phone width app shell, satisfies AC-1, AC-2, AC-8
+  - [x] `TabBar`, `HeroSpotlight`, and `Chip`/`ChipGroup` components, plus the restyled poster `Card` with its rating badge, satisfies AC-3, AC-4, AC-5, AC-6, AC-7
+  - [x] Restyle the remaining touched components (button, badge, input, dialog, toast, container, stack, link); WCAG AA checked by construction, a live browser check is still owed (spec 0007 Follow-up), satisfies AC-9, AC-11
+  - [x] `/dev/components` showcase updated and `design.md` rewritten for the new direction, satisfies AC-1, AC-10
+- [ ] Verify it: `/check verify design system & UI foundation`
+- [ ] Test it: `/test design system & UI foundation`
 
 ### 6. Product analytics foundation
 

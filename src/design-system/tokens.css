@@ -54,10 +54,28 @@
   --spacing-2xl: 3rem; /* 48px */
   --spacing-section: 4rem; /* 64px, section level rhythm, its own step */
 
-  /* Radius: three steps only. */
+  /* Container widths for max-w-* utilities. Declared explicitly for every size this
+     scale reuses from the spacing steps above (sm, md, xl, 2xl): without a matching
+     --container-* value, Tailwind resolved e.g. max-w-md against --spacing-md (1rem)
+     instead of a real reading width, collapsing cards and dialogs to ~16px wide. Values
+     match Tailwind's own default container scale. max-w-6xl needs no entry here, its
+     size step doesn't collide with a --spacing-* key so Tailwind's default already applies. */
+  --container-sm: 24rem;
+  --container-md: 28rem;
+  --container-xl: 36rem;
+  --container-2xl: 42rem;
+
+  /* Radius: four steps. `lg` added for spec 0007 (the mobile first streaming redesign):
+     poster cards and the hero spotlight read as too sharp at radius-md. */
   --radius-sm: 0.25rem; /* inputs, buttons */
-  --radius-md: 0.5rem; /* cards */
-  --radius-full: 9999px; /* pills, avatars */
+  --radius-md: 0.5rem; /* small surfaces, dialogs */
+  --radius-lg: 1rem; /* poster cards, the hero spotlight */
+  --radius-full: 9999px; /* pills, avatars, chips */
+
+  /* Scrim: canvas repeated as its own token so gradient overlays and badges sitting on top
+     of a movie poster image have one dedicated value to tune, independent of the page
+     background it happens to match today. Spec 0007. */
+  --color-scrim: #0c0a08;
 
   /* Motion: one standard ease, one spring. Durations referenced via arbitrary value
      syntax (duration-(--duration-base)) since Tailwind has no named duration theme key. */
@@ -70,6 +88,7 @@
   --duration-instant: 80ms;
   --duration-base: 160ms;
   --duration-slow: 240ms;
+  --size-tab-bar: 4rem; /* 64px, the bottom TabBar's fixed height, spec 0007 */
 }
 
 /* AC-8: every transition, hover, and open/close effect collapses to an instant state

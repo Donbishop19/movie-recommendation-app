@@ -20,7 +20,7 @@ export default async function SignInPage({
       as="main"
       className="flex min-h-screen items-center justify-center py-section"
     >
-      <Stack gap="xl" align="center" className="w-full max-w-md">
+      <Stack gap="xl" align="center" className="w-full max-w-(--container-md)">
         <Stack gap="xs" align="center" className="text-center">
           <Link href="/" variant="nav" className="text-lg font-medium text-ink">
             Movie Recommendation App

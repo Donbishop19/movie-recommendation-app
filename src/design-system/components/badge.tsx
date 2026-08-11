@@ -12,6 +12,8 @@ export const badgeVariants = cva(
         accent: "bg-accent text-on-accent",
         success: "bg-success/15 text-success",
         error: "bg-error/15 text-error",
+        /** A pill for text sitting on top of a poster image, e.g. the TMDB rating badge (spec 0007). */
+        rating: "bg-scrim/80 text-ink backdrop-blur-sm",
       },
     },
     defaultVariants: {
