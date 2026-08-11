@@ -9,19 +9,19 @@ _You are in charge. Every box below is a **suggestion**, not a gate: run any, sk
 
 ## At a glance
 
-| #   | Feature                          | Phase      | Status  |
-| --- | -------------------------------- | ---------- | ------- |
-| 1   | Stack & architecture             | Foundation | done    |
-| 2   | Coding standards & tooling       | Foundation | done    |
-| 3   | Data model                       | Foundation | done    |
-| 4   | Movie catalog integration        | Foundation | done    |
-| 5   | Design system & UI foundation    | Foundation | done    |
-| 6   | Product analytics foundation     | Foundation | done    |
-| 7   | Core discovery loop              | Slice 1    | planned |
-| 8   | Letterboxd CSV import onboarding | Slice 2    | planned |
-| 9   | Vibe search                      | Slice 3    | planned |
-| 10  | Account & privacy settings       | Slice 4    | planned |
-| 11  | Public landing page & SEO        | Slice 5    | planned |
+| #   | Feature                          | Phase      | Status      |
+| --- | -------------------------------- | ---------- | ----------- |
+| 1   | Stack & architecture             | Foundation | done        |
+| 2   | Coding standards & tooling       | Foundation | done        |
+| 3   | Data model                       | Foundation | done        |
+| 4   | Movie catalog integration        | Foundation | done        |
+| 5   | Design system & UI foundation    | Foundation | done        |
+| 6   | Product analytics foundation     | Foundation | done        |
+| 7   | Core discovery loop              | Slice 1    | in-progress |
+| 8   | Letterboxd CSV import onboarding | Slice 2    | planned     |
+| 9   | Vibe search                      | Slice 3    | planned     |
+| 10  | Account & privacy settings       | Slice 4    | planned     |
+| 11  | Public landing page & SEO        | Slice 5    | planned     |
 
 ## Foundations
 
@@ -101,12 +101,19 @@ Event taxonomy and provider so onboarding completion and feed engagement, the ch
 
 ## Slice 1: Core discovery loop
 
-### 7. Core discovery loop · needs a decision
+### 7. Core discovery loop
 
 The walking skeleton: sign in (email + Google OAuth), swipe through movies to onboard, then see a personalized feed with a reason attached to each recommendation. Real auth, real DB, real UI, no CSV import or vibe search yet.
 **Done when:** a user can sign in, swipe to rate a set of movies, and see a feed of recommendations, each with a short reason, that reflects their swipes.
 
-- [ ] Design it (spec): `/architect core discovery loop`
+- [x] Design it (spec): `/architect core discovery loop` · spec [0006](../specs/0006-core-discovery-loop/index.md)
+- [x] Build it: `/develop core discovery loop`
+  - [x] Auth: email/password sign up and sign in, Google OAuth plus the callback route, sign out, the `/signin` page, and route gating middleware, satisfies AC-1, AC-8, AC-10 · code in `src/auth/`, `src/app/signin/`, `src/app/auth/callback/`, `src/proxy.ts`
+  - [x] Swipe onboarding: the swipe deck action, the swipe screen, and the swipe action that sets onboarding complete at 10 swipes, satisfies AC-2, AC-3, AC-9 · code in `src/app/actions/onboarding.ts`, `src/app/onboarding/`, `src/movies/movie-poster.tsx`
+  - [x] Feed generation and screen: genre overlap ranking, the popularity fallback, the feed list UI, and load more, satisfies AC-4, AC-5, AC-6, AC-9, AC-11 · code in `src/app/actions/feed.ts`, `src/app/feed/`, `src/movies/tmdb-client.ts`
+  - [x] Feed engagement: like/dislike on a feed item, feeding back into ratings, satisfies AC-7 · code in `src/app/actions/feed.ts`
+- [ ] Verify it: `/check verify core discovery loop`
+- [ ] Test it: `/test core discovery loop`
 
 ## Slice 2: Letterboxd CSV import onboarding
 
