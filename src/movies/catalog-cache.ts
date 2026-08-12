@@ -127,9 +127,10 @@ export async function detailUpsert(
 
 /**
  * List upsert: writes only the fields search/browse responses carry. On insert it seeds
- * `cached_at` to the Unix epoch so the row reads as needing a detail fetch; on conflict it
- * never touches `cached_at`, `genres`, `cast_members`, or `runtime_minutes`, so it can never
- * downgrade a row that already has real detail data.
+ * `cached_at` to the Unix epoch so the row reads as needing a detail fetch, and seeds `genres`
+ * from the list response's `genre_ids` (the only genre signal a list/discover call carries); on
+ * conflict it never touches `cached_at`, `genres`, `cast_members`, or `runtime_minutes`, so it
+ * can never downgrade a row that already has real detail data.
  */
 export async function listUpsert(
   tmdbId: number,
@@ -149,6 +150,7 @@ export async function listUpsert(
       externalSource: TMDB_SOURCE,
       externalId: String(tmdbId),
       cachedAt: EPOCH,
+      genres: [...item.genres],
       ...shared,
     })
     .onConflictDoUpdate({
