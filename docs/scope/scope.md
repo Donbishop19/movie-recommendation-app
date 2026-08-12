@@ -15,7 +15,7 @@ _You are in charge. Every box below is a **suggestion**, not a gate: run any, sk
 | 2   | Coding standards & tooling       | Foundation | done        |
 | 3   | Data model                       | Foundation | done        |
 | 4   | Movie catalog integration        | Foundation | done        |
-| 5   | Design system & UI foundation    | Foundation | in-progress |
+| 5   | Design system & UI foundation    | Foundation | done        |
 | 6   | Product analytics foundation     | Foundation | done        |
 | 7   | Core discovery loop              | Slice 1    | in-progress |
 | 8   | Letterboxd CSV import onboarding | Slice 2    | planned     |
@@ -83,8 +83,8 @@ Visual language, layout primitives, and base components so onboarding, the feed,
   - [x] `TabBar`, `HeroSpotlight`, and `Chip`/`ChipGroup` components, plus the restyled poster `Card` with its rating badge, satisfies AC-3, AC-4, AC-5, AC-6, AC-7
   - [x] Restyle the remaining touched components (button, badge, input, dialog, toast, container, stack, link); WCAG AA checked by construction, a live browser check is still owed (spec 0007 Follow-up), satisfies AC-9, AC-11
   - [x] `/dev/components` showcase updated and `design.md` rewritten for the new direction, satisfies AC-1, AC-10
-- [ ] Verify it: `/check verify design system & UI foundation`
-- [ ] Test it: `/test design system & UI foundation`
+- [x] Verify it: `/check verify design system & UI foundation` (manually verified by the engineer against the running app, 2026-08-12, not a `/check verify` run)
+- [x] Test it: `/test design system & UI foundation` (manually verified by the engineer against the running app, 2026-08-12, not a `/test` run)
 
 ### 6. Product analytics foundation
 

@@ -1,7 +1,7 @@
 # 0007. Mobile first streaming app visual redesign
 
 **Date**: 2026-08-11
-**Status**: In Progress
+**Status**: Accepted
 
 ## Summary
 
@@ -196,11 +196,10 @@ typecheck plus manual `/check verify`"):
 
 ## Follow-up
 
-- [ ] No browser automation tool was available to `/develop` for this build; typecheck and lint are
-      clean and the `/dev/components` showcase was confirmed rendering server side (HTTP 200), but
-      the actual visual result (hero gradient legibility, tab bar layout, poster grid on a real
-      phone width) has not been checked in a live browser. Do that check next, ideally against the
-      reference image, before calling this feature done.
+- [x] No browser automation tool was available to `/develop` for this build; the engineer checked
+      the live result in their own browser 2026-08-12 against the reference image and confirmed it
+      is good enough for now (after a follow up pass that restyled `TabBar` into a floating pill
+      and added `AppBackdrop`, both landed the same day).
 - [ ] Wire the `ChipGroup` filter pills to real genre or category filtering once there is more than
       one ranking view to switch between (see AC-6).
 - [ ] Replace the `TabBar`'s Account tab placeholder with real account settings once Slice 4
