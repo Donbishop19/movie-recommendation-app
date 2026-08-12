@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Star, ThumbsDown, ThumbsUp } from "lucide-react";
 import { getFeed, engageFeedItem, type FeedItem } from "@/app/actions/feed";
 import { MoviePoster } from "@/movies/movie-poster";
+import { AppBackdrop } from "@/design-system/components/app-backdrop";
 import {
   Card,
   CardContent,
@@ -144,118 +145,124 @@ export function FeedView() {
   const [top, ...rest] = items;
 
   return (
-    <Stack gap="lg">
-      <h1 className="text-2xl font-medium text-ink">Your feed</h1>
-      <ChipGroup label="Categories">
-        <Chip active>For You</Chip>
-      </ChipGroup>
-      {top ? (
-        <HeroSpotlight
-          title={top.movie.title}
-          releaseYear={top.movie.releaseYear}
-          posterUrl={top.movie.posterUrl}
-          reason={top.reason}
-          action={
-            top.status === "shown" ? (
-              <Stack direction="row" gap="sm" className="pt-xs">
-                <Button
-                  type="button"
-                  variant="secondary"
-                  size="sm"
-                  isLoading={pendingItemId === top.feedItemId}
-                  onClick={() => void handleEngage(top.feedItemId, "dislike")}
-                >
-                  <ThumbsDown className="size-4" aria-hidden="true" />
-                  Dislike
-                </Button>
-                <Button
-                  type="button"
-                  size="sm"
-                  isLoading={pendingItemId === top.feedItemId}
-                  onClick={() => void handleEngage(top.feedItemId, "like")}
-                >
-                  <ThumbsUp className="size-4" aria-hidden="true" />
-                  Like
-                </Button>
-              </Stack>
-            ) : (
-              <Badge variant={top.status === "liked" ? "success" : "default"}>
-                {top.status === "liked" ? "Liked" : "Disliked"}
-              </Badge>
-            )
-          }
-        />
-      ) : null}
-      {rest.length > 0 ? (
-        <div className="grid grid-cols-2 gap-md">
-          {rest.map((item) => (
-            <Card key={item.feedItemId} className="overflow-hidden">
-              <div className="relative aspect-2/3 w-full bg-canvas">
-                <MoviePoster
-                  posterUrl={item.movie.posterUrl}
-                  title={item.movie.title}
-                />
-                {item.movie.externalRating ? (
-                  <Badge
-                    variant="rating"
-                    className="absolute right-sm top-sm gap-xxs"
+    <>
+      <AppBackdrop posterUrl={top?.movie.posterUrl} />
+      <Stack gap="lg">
+        <h1 className="text-2xl font-medium text-ink">Your feed</h1>
+        <ChipGroup label="Categories">
+          <Chip active>For You</Chip>
+        </ChipGroup>
+        {top ? (
+          <HeroSpotlight
+            className="shadow-lg"
+            title={top.movie.title}
+            releaseYear={top.movie.releaseYear}
+            posterUrl={top.movie.posterUrl}
+            reason={top.reason}
+            action={
+              top.status === "shown" ? (
+                <Stack direction="row" gap="sm" className="pt-xs">
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="sm"
+                    isLoading={pendingItemId === top.feedItemId}
+                    onClick={() => void handleEngage(top.feedItemId, "dislike")}
                   >
-                    <Star className="size-3" aria-hidden="true" />
-                    {item.movie.externalRating}
-                  </Badge>
-                ) : null}
-              </div>
-              <CardContent className="p-sm">
-                <h2 className="line-clamp-1 text-sm font-medium text-ink">
-                  {item.movie.title}
-                </h2>
-                {item.status === "shown" ? (
-                  <Stack direction="row" gap="xs" className="pt-xs">
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      size="sm"
-                      aria-label="Dislike"
-                      isLoading={pendingItemId === item.feedItemId}
-                      onClick={() =>
-                        void handleEngage(item.feedItemId, "dislike")
-                      }
-                    >
-                      <ThumbsDown className="size-4" aria-hidden="true" />
-                    </Button>
-                    <Button
-                      type="button"
-                      size="sm"
-                      aria-label="Like"
-                      isLoading={pendingItemId === item.feedItemId}
-                      onClick={() => void handleEngage(item.feedItemId, "like")}
-                    >
-                      <ThumbsUp className="size-4" aria-hidden="true" />
-                    </Button>
-                  </Stack>
-                ) : (
-                  <Badge
-                    variant={item.status === "liked" ? "success" : "default"}
-                    className="mt-xs"
+                    <ThumbsDown className="size-4" aria-hidden="true" />
+                    Dislike
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    isLoading={pendingItemId === top.feedItemId}
+                    onClick={() => void handleEngage(top.feedItemId, "like")}
                   >
-                    {item.status === "liked" ? "Liked" : "Disliked"}
-                  </Badge>
-                )}
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      ) : null}
-      {hasMore ? (
-        <Button
-          variant="secondary"
-          isLoading={isLoadingMore}
-          onClick={() => void load(false)}
-          className="self-center"
-        >
-          Load more
-        </Button>
-      ) : null}
-    </Stack>
+                    <ThumbsUp className="size-4" aria-hidden="true" />
+                    Like
+                  </Button>
+                </Stack>
+              ) : (
+                <Badge variant={top.status === "liked" ? "success" : "default"}>
+                  {top.status === "liked" ? "Liked" : "Disliked"}
+                </Badge>
+              )
+            }
+          />
+        ) : null}
+        {rest.length > 0 ? (
+          <div className="grid grid-cols-2 gap-md">
+            {rest.map((item) => (
+              <Card key={item.feedItemId} className="overflow-hidden shadow-lg">
+                <div className="relative aspect-2/3 w-full bg-canvas">
+                  <MoviePoster
+                    posterUrl={item.movie.posterUrl}
+                    title={item.movie.title}
+                  />
+                  {item.movie.externalRating ? (
+                    <Badge
+                      variant="rating"
+                      className="absolute right-sm top-sm gap-xxs"
+                    >
+                      <Star className="size-3" aria-hidden="true" />
+                      {item.movie.externalRating}
+                    </Badge>
+                  ) : null}
+                </div>
+                <CardContent className="p-sm">
+                  <h2 className="line-clamp-1 text-sm font-medium text-ink">
+                    {item.movie.title}
+                  </h2>
+                  {item.status === "shown" ? (
+                    <Stack direction="row" gap="xs" className="pt-xs">
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        size="sm"
+                        aria-label="Dislike"
+                        isLoading={pendingItemId === item.feedItemId}
+                        onClick={() =>
+                          void handleEngage(item.feedItemId, "dislike")
+                        }
+                      >
+                        <ThumbsDown className="size-4" aria-hidden="true" />
+                      </Button>
+                      <Button
+                        type="button"
+                        size="sm"
+                        aria-label="Like"
+                        isLoading={pendingItemId === item.feedItemId}
+                        onClick={() =>
+                          void handleEngage(item.feedItemId, "like")
+                        }
+                      >
+                        <ThumbsUp className="size-4" aria-hidden="true" />
+                      </Button>
+                    </Stack>
+                  ) : (
+                    <Badge
+                      variant={item.status === "liked" ? "success" : "default"}
+                      className="mt-xs"
+                    >
+                      {item.status === "liked" ? "Liked" : "Disliked"}
+                    </Badge>
+                  )}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : null}
+        {hasMore ? (
+          <Button
+            variant="secondary"
+            isLoading={isLoadingMore}
+            onClick={() => void load(false)}
+            className="self-center"
+          >
+            Load more
+          </Button>
+        ) : null}
+      </Stack>
+    </>
   );
 }

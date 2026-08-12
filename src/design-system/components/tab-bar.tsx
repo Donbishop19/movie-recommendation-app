@@ -7,8 +7,15 @@ import { Link } from "@/design-system/components/link";
 import { cn } from "@/design-system/lib/cn";
 import { focusRing } from "@/design-system/lib/focus-ring";
 
-const tabItemClass =
-  "flex h-full min-w-11 flex-1 flex-col items-center justify-center gap-xxs text-xs font-medium text-muted transition-colors duration-(--duration-base) hover:text-body data-[active=true]:text-accent";
+const itemClass =
+  "flex flex-col items-center gap-xxs rounded-full py-xs text-xs font-medium no-underline transition-colors duration-(--duration-base)";
+
+function iconWrapClass(active: boolean) {
+  return cn(
+    "flex size-8 items-center justify-center rounded-full transition-colors duration-(--duration-base)",
+    active && "bg-accent text-on-accent",
+  );
+}
 
 export interface TabBarProps {
   children: ReactNode;
@@ -16,20 +23,21 @@ export interface TabBarProps {
 }
 
 /**
- * The authenticated app shell's persistent bottom navigation (spec 0007, AC-3, AC-4). Replaces
- * `NavBar` on the onboarding and feed pages; the signed out shell keeps `NavBar`. Compose with
- * `TabBarItem` (a route link) and `TabBarAction` (a non route action, e.g. sign out).
+ * The authenticated app shell's persistent bottom navigation (spec 0007, AC-3, AC-4): a floating
+ * rounded pill inset from the screen edges with a filled circle behind the active icon, matching
+ * the reference. Replaces `NavBar` on the onboarding and feed pages; the signed out shell keeps
+ * `NavBar`. Compose with `TabBarItem` (a route link) and `TabBarAction` (a non route action).
  */
 export function TabBar({ children, className }: TabBarProps) {
   return (
     <nav
       aria-label="Primary"
       className={cn(
-        "fixed inset-x-0 bottom-0 z-40 h-(--size-tab-bar) border-t border-border bg-canvas/95 backdrop-blur",
+        "fixed inset-x-0 bottom-0 z-40 flex justify-center px-lg pb-lg",
         className,
       )}
     >
-      <ul className="mx-auto flex h-full w-full max-w-(--container-sm) items-stretch justify-around px-md">
+      <ul className="flex h-(--size-tab-bar) w-full max-w-(--container-sm) items-center justify-around rounded-full border border-border bg-surface/95 px-sm shadow-lg backdrop-blur">
         {children}
       </ul>
     </nav>
@@ -48,15 +56,18 @@ export function TabBarItem({ href, label, icon }: TabBarItemProps) {
   const active = pathname === href;
 
   return (
-    <li className="flex flex-1">
+    <li className="flex flex-1 justify-center">
       <Link
         href={href}
         variant="nav"
         aria-current={active ? "page" : undefined}
-        data-active={active}
-        className={cn(tabItemClass, focusRing)}
+        className={cn(
+          itemClass,
+          active ? "text-accent" : "text-muted hover:text-body",
+          focusRing,
+        )}
       >
-        {icon}
+        <span className={iconWrapClass(active)}>{icon}</span>
         {label}
       </Link>
     </li>
@@ -73,10 +84,13 @@ export interface TabBarActionProps {
 /** A non route `TabBar` entry: a submit button inside its own form, styled like `TabBarItem`. */
 export function TabBarAction({ label, icon, action }: TabBarActionProps) {
   return (
-    <li className="flex flex-1">
+    <li className="flex flex-1 justify-center">
       <form action={action} className="contents">
-        <button type="submit" className={cn(tabItemClass, focusRing, "w-full")}>
-          {icon}
+        <button
+          type="submit"
+          className={cn(itemClass, "text-muted hover:text-body", focusRing)}
+        >
+          <span className={iconWrapClass(false)}>{icon}</span>
           {label}
         </button>
       </form>
