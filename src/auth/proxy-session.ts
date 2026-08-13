@@ -7,10 +7,11 @@ const AUTH_PATH = "/signin";
 /** Spec 0008 AC-8: an already onboarded user must still be able to reach this one route, to re-import. */
 const REIMPORT_PATH = "/onboarding/import";
 
-/** `/onboarding` and every onboarding sub-route (`/onboarding/swipe`, `/onboarding/import`, …), plus `/feed`. */
+/** `/onboarding` and every onboarding sub-route (`/onboarding/swipe`, `/onboarding/import`, …), plus `/feed` and `/search`. */
 function isProtectedPath(pathname: string): boolean {
   return (
     pathname === "/feed" ||
+    pathname === "/search" ||
     pathname === "/onboarding" ||
     pathname.startsWith("/onboarding/")
   );
@@ -22,7 +23,9 @@ function isAtDestination(
   destination: "/feed" | "/onboarding",
 ): boolean {
   if (destination === "/feed") {
-    return pathname === "/feed";
+    // Spec 0009: vibe search is reachable alongside the feed once onboarded, not a separate
+    // destination of its own.
+    return pathname === "/feed" || pathname === "/search";
   }
   return pathname === "/onboarding" || pathname.startsWith("/onboarding/");
 }

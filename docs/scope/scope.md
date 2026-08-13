@@ -9,19 +9,19 @@ _You are in charge. Every box below is a **suggestion**, not a gate: run any, sk
 
 ## At a glance
 
-| #   | Feature                          | Phase      | Status  |
-| --- | -------------------------------- | ---------- | ------- |
-| 1   | Stack & architecture             | Foundation | done    |
-| 2   | Coding standards & tooling       | Foundation | done    |
-| 3   | Data model                       | Foundation | done    |
-| 4   | Movie catalog integration        | Foundation | done    |
-| 5   | Design system & UI foundation    | Foundation | done    |
-| 6   | Product analytics foundation     | Foundation | done    |
-| 7   | Core discovery loop              | Slice 1    | done    |
-| 8   | Letterboxd CSV import onboarding | Slice 2    | done    |
-| 9   | Vibe search                      | Slice 3    | planned |
-| 10  | Account & privacy settings       | Slice 4    | planned |
-| 11  | Public landing page & SEO        | Slice 5    | planned |
+| #   | Feature                          | Phase      | Status      |
+| --- | -------------------------------- | ---------- | ----------- |
+| 1   | Stack & architecture             | Foundation | done        |
+| 2   | Coding standards & tooling       | Foundation | done        |
+| 3   | Data model                       | Foundation | done        |
+| 4   | Movie catalog integration        | Foundation | done        |
+| 5   | Design system & UI foundation    | Foundation | done        |
+| 6   | Product analytics foundation     | Foundation | done        |
+| 7   | Core discovery loop              | Slice 1    | done        |
+| 8   | Letterboxd CSV import onboarding | Slice 2    | done        |
+| 9   | Vibe search                      | Slice 3    | in-progress |
+| 10  | Account & privacy settings       | Slice 4    | planned     |
+| 11  | Public landing page & SEO        | Slice 5    | planned     |
 
 ## Foundations
 
@@ -134,12 +134,19 @@ A second onboarding path: upload a Letterboxd ratings export CSV, match titles a
 
 ## Slice 3: Vibe search
 
-### 9. Vibe search · needs a decision
+### 9. Vibe search
 
 Natural language search over the catalog ("something moody and slow-burn like Blade Runner") that understands vibe, not just title/genre keywords, informed by the user's taste profile.
 **Done when:** a user can type a free text vibe query and get a ranked, relevant result set distinct from keyword/title search, in a reasonable response time.
 
-- [ ] Design it (spec): `/architect vibe search`
+- [x] Design it (spec): `/architect vibe search` · spec [0009](../specs/0009-vibe-search/index.md)
+- [x] Build it: `/develop vibe search` · code in `src/search/`, `src/app/actions/search.ts`, `src/app/search/`, `src/app/api/inngest/`, `src/movies/catalog-cache.ts`, `src/proxy.ts`, `src/auth/proxy-session.ts`, `src/analytics/events.ts`
+  - [x] Embedding pipeline: OpenAI + Inngest setup, the `embedMovie` function, and the HNSW similarity index migration, satisfies AC-9
+  - [x] Vibe search ranking: the `vibeSearch` action (query embedding, cosine similarity, load more), the taste centroid blend, and the empty state/popularity fallback, satisfies AC-1, AC-2, AC-3, AC-4, AC-5
+  - [x] Guardrails and engagement: query validation, the per-user rate limit, and `rateSearchResult`, satisfies AC-6, AC-7, AC-8
+  - [x] Search screen and instrumentation: the `/search` UI (TabBar entry, input, preset chips, result grid, states, inline retry), the analytics event, and Sentry reporting, satisfies AC-1, AC-10, AC-11
+- [ ] Verify it: `/check verify vibe search`
+- [ ] Test it: `/test vibe search`
 
 ## Slice 4: Account & privacy settings
 

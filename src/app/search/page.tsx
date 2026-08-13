@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Home, Search, User } from "lucide-react";
+import { Home, Search as SearchIcon, User } from "lucide-react";
 import { Container } from "@/design-system/components/container";
 import {
   TabBar,
@@ -7,21 +7,21 @@ import {
   TabBarAction,
 } from "@/design-system/components/tab-bar";
 import { signOut } from "@/auth/actions";
-import { FeedView } from "./feed-view";
+import { SearchView } from "./search-view";
 
 export const metadata: Metadata = {
-  title: "Your feed — Movie Recommendation App",
+  title: "Vibe search — Movie Recommendation App",
 };
 
-/** AC-4, AC-11: the personalized recommendation feed, with reasons and load more. */
-export default function FeedPage() {
+/** AC-1, AC-11 of spec 0009: the vibe search screen and its tab in the authenticated shell. */
+export default function SearchPage() {
   return (
     <div>
       <Container
         as="main"
         className="max-w-(--container-sm) py-section pb-[calc(var(--size-tab-bar)+var(--spacing-lg))]"
       >
-        <FeedView />
+        <SearchView />
       </Container>
       <TabBar>
         <TabBarItem
@@ -32,7 +32,7 @@ export default function FeedPage() {
         <TabBarItem
           href="/search"
           label="Search"
-          icon={<Search className="size-5" aria-hidden="true" />}
+          icon={<SearchIcon className="size-5" aria-hidden="true" />}
         />
         <TabBarAction
           label="Account"

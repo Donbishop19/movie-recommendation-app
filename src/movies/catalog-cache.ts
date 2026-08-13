@@ -1,7 +1,9 @@
 import { asc, eq, and, lt } from "drizzle-orm";
+import * as Sentry from "@sentry/nextjs";
 import { db } from "@/db/client";
 import { movies } from "@/db/drizzle/schema";
 import { toUndefined } from "@/db/nullable";
+import { inngest } from "@/search/inngest-client";
 import {
   toAbsoluteTmdbImageUrl,
   type TmdbMovieDetail,
@@ -91,6 +93,24 @@ export function findCachedByTmdbId(
   });
 }
 
+/**
+ * Fires the `movie/cached` event for a row with no embedding yet, so the `embedMovie`
+ * Inngest function (spec 0009) picks it up asynchronously. Never blocks or fails the
+ * caller: a send failure is reported but the cache write it followed already succeeded.
+ */
+function requestEmbeddingIfMissing(row: MovieRow): void {
+  if (row.embedding) {
+    return;
+  }
+  inngest
+    .send({ name: "movie/cached", data: { movieId: row.id } })
+    .catch((error: unknown) => {
+      Sentry.captureException(error, {
+        tags: { feature: "vibe-search", action: "sendMovieCachedEvent" },
+      });
+    });
+}
+
 /** Full detail upsert: writes every column and always sets `cached_at = now()`. */
 export async function detailUpsert(
   tmdbId: number,
@@ -122,6 +142,7 @@ export async function detailUpsert(
   if (!row) {
     throw new Error("Detail upsert returned no row");
   }
+  requestEmbeddingIfMissing(row);
   return row;
 }
 
@@ -162,6 +183,7 @@ export async function listUpsert(
   if (!row) {
     throw new Error("List upsert returned no row");
   }
+  requestEmbeddingIfMissing(row);
   return row;
 }
 
