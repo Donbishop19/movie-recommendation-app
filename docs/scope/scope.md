@@ -20,7 +20,7 @@ _You are in charge. Every box below is a **suggestion**, not a gate: run any, sk
 | 7   | Core discovery loop              | Slice 1    | done        |
 | 8   | Letterboxd CSV import onboarding | Slice 2    | done        |
 | 9   | Vibe search                      | Slice 3    | in-progress |
-| 10  | Account & privacy settings       | Slice 4    | planned     |
+| 10  | Account & privacy settings       | Slice 4    | in-progress |
 | 11  | Public landing page & SEO        | Slice 5    | planned     |
 
 ## Foundations
@@ -150,12 +150,19 @@ Natural language search over the catalog ("something moody and slow-burn like Bl
 
 ## Slice 4: Account & privacy settings
 
-### 10. Account & privacy settings · needs a decision
+### 10. Account & privacy settings
 
 Privacy policy and terms pages, plus account controls: sign out, delete account, and delete the imported/rated data tied to it.
 **Done when:** a user can read the privacy policy, delete their account, and confirm their ratings/import data are removed; the deletion behavior (hard vs soft delete, cascade scope) is recorded.
 
-- [ ] Design it (spec): `/architect account & privacy settings`
+- [x] Design it (spec): `/architect account & privacy settings` · spec [0010](../specs/0010-account-privacy-settings.md)
+- [ ] Build it: `/develop account & privacy settings`
+  - [ ] Service role admin client and env var for the Supabase Auth Admin API, satisfies AC-6
+  - [ ] Account page, session email, and bottom tab bar wiring (Account tab now links to the page instead of signing out directly), satisfies AC-1, AC-4
+  - [ ] Privacy and terms static pages with placeholder content and page metadata, satisfies AC-2, AC-3, AC-10
+  - [ ] Delete account flow: analytics event, `deleteAccount` action, and the Danger zone type-to-confirm UI, satisfies AC-5, AC-6, AC-7, AC-8, AC-9
+- [ ] Verify it: `/check verify account & privacy settings`
+- [ ] Test it: `/test account & privacy settings`
 
 ## Slice 5: Public landing page & SEO
 
@@ -174,6 +181,8 @@ Out of scope for the current build pass, kept so the plan stays honest.
 - **Notification / recommendation digest email**: welcome email and periodic digest · needs a decision
 - **Admin panel**: internal view to manage users and inspect data · needs a decision
 - **Internationalization**: additional languages/locales · needs a decision
+- **Profile editing**: display name and avatar editing on the account page (columns already exist) · from spec 0010
+- **Download my data export**: a data export alongside account deletion, revisit if a compliance requirement becomes real · from spec 0010
 
 ## Legend
 
