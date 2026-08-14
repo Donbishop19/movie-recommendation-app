@@ -41,6 +41,7 @@ export type TmdbListMovie = {
   readonly releaseDate: string;
   readonly posterPath: string | undefined;
   readonly voteAverage: number;
+  readonly genres: ReadonlyArray<string>;
 };
 
 export type TmdbListResult = {
@@ -123,6 +124,7 @@ type TmdbApiListMovie = {
   readonly release_date: string;
   readonly poster_path: string | null;
   readonly vote_average: number;
+  readonly genre_ids: ReadonlyArray<number>;
 };
 type TmdbApiListResponse = {
   readonly results: ReadonlyArray<TmdbApiListMovie>;
@@ -157,6 +159,9 @@ function toListMovie(movie: TmdbApiListMovie): TmdbListMovie {
     releaseDate: movie.release_date,
     posterPath: movie.poster_path ?? undefined,
     voteAverage: movie.vote_average,
+    genres: movie.genre_ids
+      .map((id) => TMDB_GENRE_NAMES[id])
+      .filter((name): name is string => name !== undefined),
   };
 }
 
@@ -266,6 +271,11 @@ export const TMDB_GENRE_IDS: Readonly<Record<string, number>> = {
   War: 10752,
   Western: 37,
 };
+
+/** The inverse of `TMDB_GENRE_IDS`: list endpoints return `genre_ids`, not names. */
+const TMDB_GENRE_NAMES: Readonly<Record<number, string>> = Object.fromEntries(
+  Object.entries(TMDB_GENRE_IDS).map(([name, id]) => [id, name]),
+);
 
 /**
  * TMDB's popularity ranked discover feed filtered to any of the given genre ids (OR match),

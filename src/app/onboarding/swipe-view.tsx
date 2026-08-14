@@ -4,7 +4,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getSwipeDeck, swipeMovie } from "@/app/actions/onboarding";
 import type { Movie } from "@/movies/catalog-cache";
+import { Star } from "lucide-react";
 import { MoviePoster } from "@/movies/movie-poster";
+import { AppBackdrop } from "@/design-system/components/app-backdrop";
 import {
   Card,
   CardContent,
@@ -115,7 +117,7 @@ export function SwipeView({ target }: SwipeViewProps) {
 
   if (isInitialLoading) {
     return (
-      <Stack gap="md" align="center" className="w-full max-w-sm">
+      <Stack gap="md" align="center" className="w-full max-w-(--container-sm)">
         <CardSkeleton className="aspect-2/3 w-full" />
       </Stack>
     );
@@ -123,7 +125,11 @@ export function SwipeView({ target }: SwipeViewProps) {
 
   if (initialError) {
     return (
-      <Stack gap="md" align="center" className="w-full max-w-sm text-center">
+      <Stack
+        gap="md"
+        align="center"
+        className="w-full max-w-(--container-sm) text-center"
+      >
         <FormErrorSummary
           title="Couldn't load the swipe deck"
           errors={["Check your connection and try again."]}
@@ -145,7 +151,11 @@ export function SwipeView({ target }: SwipeViewProps) {
 
   if (!current) {
     return (
-      <Stack gap="md" align="center" className="w-full max-w-sm text-center">
+      <Stack
+        gap="md"
+        align="center"
+        className="w-full max-w-(--container-sm) text-center"
+      >
         <p className="text-body">
           No more movies to show right now. Check back in a bit.
         </p>
@@ -154,48 +164,60 @@ export function SwipeView({ target }: SwipeViewProps) {
   }
 
   return (
-    <Stack gap="lg" align="center" className="w-full max-w-sm">
-      <Badge variant="accent">
-        {Math.min(swipeCount, target)} of {target}
-      </Badge>
+    <>
+      <AppBackdrop posterUrl={current.posterUrl} />
+      <Stack gap="lg" align="center" className="w-full max-w-(--container-sm)">
+        <Badge variant="accent">
+          {Math.min(swipeCount, target)} of {target}
+        </Badge>
 
-      <Card className="w-full overflow-hidden">
-        <div className="relative aspect-2/3 w-full bg-surface">
-          <MoviePoster posterUrl={current.posterUrl} title={current.title} />
-        </div>
-        <CardContent className="pt-lg">
-          <h2 className="text-lg font-medium text-ink">
-            {current.title}
-            {current.releaseYear ? (
-              <span className="text-body"> ({current.releaseYear})</span>
+        <Card className="w-full overflow-hidden shadow-lg">
+          <div className="relative aspect-2/3 w-full bg-surface">
+            <MoviePoster posterUrl={current.posterUrl} title={current.title} />
+            {current.externalRating ? (
+              <Badge
+                variant="rating"
+                className="absolute right-sm top-sm gap-xxs"
+              >
+                <Star className="size-3" aria-hidden="true" />
+                {current.externalRating}
+              </Badge>
             ) : null}
-          </h2>
-          {current.genres && current.genres.length > 0 ? (
-            <p className="mt-xxs text-sm text-body">
-              {current.genres.join(" · ")}
-            </p>
-          ) : null}
-        </CardContent>
-        <CardFooter className="grid grid-cols-2 gap-sm">
-          <Button
-            type="button"
-            variant="secondary"
-            size="lg"
-            isLoading={swipePending}
-            onClick={() => void handleSwipe("pass")}
-          >
-            Pass
-          </Button>
-          <Button
-            type="button"
-            size="lg"
-            isLoading={swipePending}
-            onClick={() => void handleSwipe("like")}
-          >
-            Like
-          </Button>
-        </CardFooter>
-      </Card>
-    </Stack>
+          </div>
+          <CardContent className="pt-lg">
+            <h2 className="text-lg font-medium text-ink">
+              {current.title}
+              {current.releaseYear ? (
+                <span className="text-body"> ({current.releaseYear})</span>
+              ) : null}
+            </h2>
+            {current.genres && current.genres.length > 0 ? (
+              <p className="mt-xxs text-sm text-body">
+                {current.genres.join(" · ")}
+              </p>
+            ) : null}
+          </CardContent>
+          <CardFooter className="grid grid-cols-2 gap-sm">
+            <Button
+              type="button"
+              variant="secondary"
+              size="lg"
+              isLoading={swipePending}
+              onClick={() => void handleSwipe("pass")}
+            >
+              Pass
+            </Button>
+            <Button
+              type="button"
+              size="lg"
+              isLoading={swipePending}
+              onClick={() => void handleSwipe("like")}
+            >
+              Like
+            </Button>
+          </CardFooter>
+        </Card>
+      </Stack>
+    </>
   );
 }

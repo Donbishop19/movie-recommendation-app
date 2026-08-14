@@ -1,7 +1,9 @@
 import { asc, eq, and, lt } from "drizzle-orm";
+import * as Sentry from "@sentry/nextjs";
 import { db } from "@/db/client";
 import { movies } from "@/db/drizzle/schema";
 import { toUndefined } from "@/db/nullable";
+import { inngest } from "@/search/inngest-client";
 import {
   toAbsoluteTmdbImageUrl,
   type TmdbMovieDetail,
@@ -91,6 +93,24 @@ export function findCachedByTmdbId(
   });
 }
 
+/**
+ * Fires the `movie/cached` event for a row with no embedding yet, so the `embedMovie`
+ * Inngest function (spec 0009) picks it up asynchronously. Never blocks or fails the
+ * caller: a send failure is reported but the cache write it followed already succeeded.
+ */
+function requestEmbeddingIfMissing(row: MovieRow): void {
+  if (row.embedding) {
+    return;
+  }
+  inngest
+    .send({ name: "movie/cached", data: { movieId: row.id } })
+    .catch((error: unknown) => {
+      Sentry.captureException(error, {
+        tags: { feature: "vibe-search", action: "sendMovieCachedEvent" },
+      });
+    });
+}
+
 /** Full detail upsert: writes every column and always sets `cached_at = now()`. */
 export async function detailUpsert(
   tmdbId: number,
@@ -122,14 +142,16 @@ export async function detailUpsert(
   if (!row) {
     throw new Error("Detail upsert returned no row");
   }
+  requestEmbeddingIfMissing(row);
   return row;
 }
 
 /**
  * List upsert: writes only the fields search/browse responses carry. On insert it seeds
- * `cached_at` to the Unix epoch so the row reads as needing a detail fetch; on conflict it
- * never touches `cached_at`, `genres`, `cast_members`, or `runtime_minutes`, so it can never
- * downgrade a row that already has real detail data.
+ * `cached_at` to the Unix epoch so the row reads as needing a detail fetch, and seeds `genres`
+ * from the list response's `genre_ids` (the only genre signal a list/discover call carries); on
+ * conflict it never touches `cached_at`, `genres`, `cast_members`, or `runtime_minutes`, so it
+ * can never downgrade a row that already has real detail data.
  */
 export async function listUpsert(
   tmdbId: number,
@@ -149,6 +171,7 @@ export async function listUpsert(
       externalSource: TMDB_SOURCE,
       externalId: String(tmdbId),
       cachedAt: EPOCH,
+      genres: [...item.genres],
       ...shared,
     })
     .onConflictDoUpdate({
@@ -160,6 +183,7 @@ export async function listUpsert(
   if (!row) {
     throw new Error("List upsert returned no row");
   }
+  requestEmbeddingIfMissing(row);
   return row;
 }
 

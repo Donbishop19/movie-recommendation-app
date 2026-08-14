@@ -1,7 +1,7 @@
 # 0004. Design system and UI foundation
 
 **Date**: 2026-08-10
-**Status**: Accepted
+**Status**: Superseded by [0007](../0007-mobile-first-streaming-redesign/index.md)
 
 ## Summary
 

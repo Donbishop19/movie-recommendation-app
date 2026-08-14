@@ -8,7 +8,7 @@ import { Spinner } from "@/design-system/components/spinner";
 
 export const buttonVariants = cva(
   cn(
-    "inline-flex items-center justify-center gap-xs whitespace-nowrap rounded-sm text-sm font-medium",
+    "inline-flex items-center justify-center gap-xs whitespace-nowrap rounded-md text-sm font-medium",
     "transition-colors duration-(--duration-base) ease-standard",
     "disabled:pointer-events-none disabled:opacity-50",
     focusRing,

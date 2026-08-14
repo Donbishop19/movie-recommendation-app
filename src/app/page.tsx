@@ -21,7 +21,11 @@ export default function Home() {
         as="main"
         className="flex min-h-[calc(100vh-4rem)] items-center justify-center py-section"
       >
-        <Stack gap="md" align="center" className="max-w-xl text-center">
+        <Stack
+          gap="md"
+          align="center"
+          className="max-w-(--container-xl) text-center"
+        >
           <h1 className="text-3xl font-medium text-ink">
             A movie feed that knows your taste, and can say why.
           </h1>

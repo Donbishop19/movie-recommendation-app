@@ -22,6 +22,16 @@ export type AnalyticsEventMap = {
     readonly resultCount: number;
     readonly page: number;
   };
+  readonly vibe_search_performed: {
+    readonly resultCount: number;
+    readonly personalized: boolean;
+    readonly usedFallback: boolean;
+  };
+  readonly search_result_rated: {
+    readonly movieId: number;
+    readonly action: "like" | "dislike";
+  };
+  readonly account_deletion_completed: Record<string, never>;
 };
 
 export type EventName = keyof AnalyticsEventMap;

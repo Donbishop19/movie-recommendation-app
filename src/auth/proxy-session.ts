@@ -3,14 +3,48 @@ import { NextResponse, type NextRequest } from "next/server";
 import { authEnv } from "@/auth/env";
 import { isOnboarded } from "@/auth/onboarding";
 
-const PROTECTED_PATHS = new Set(["/onboarding", "/feed"]);
 const AUTH_PATH = "/signin";
+/** Spec 0008 AC-8: an already onboarded user must still be able to reach this one route, to re-import. */
+const REIMPORT_PATH = "/onboarding/import";
+
+/** `/onboarding` and every onboarding sub-route (`/onboarding/swipe`, `/onboarding/import`, …), plus `/feed`, `/search`, and `/account`. */
+function isProtectedPath(pathname: string): boolean {
+  return (
+    pathname === "/feed" ||
+    pathname === "/search" ||
+    pathname === "/account" ||
+    pathname === "/onboarding" ||
+    pathname.startsWith("/onboarding/")
+  );
+}
+
+/** Whether `pathname` already is (or is a sub-route of) the given onboarding/feed destination. */
+function isAtDestination(
+  pathname: string,
+  destination: "/feed" | "/onboarding",
+): boolean {
+  if (destination === "/feed") {
+    // Spec 0009: vibe search, and spec 0010: account settings, are both reachable alongside the
+    // feed once onboarded, not separate destinations of their own.
+    return (
+      pathname === "/feed" || pathname === "/search" || pathname === "/account"
+    );
+  }
+  // Spec 0010: account settings, notably deletion, must stay reachable even mid onboarding.
+  return (
+    pathname === "/onboarding" ||
+    pathname.startsWith("/onboarding/") ||
+    pathname === "/account"
+  );
+}
 
 /**
  * Refreshes the Supabase session cookie on every gated request (per Supabase's own SSR
  * pattern: `getClaims()` re-validates and re-issues the token), then enforces this feature's
- * route gating: signed out on `/onboarding` or `/feed` goes to `/signin` (AC-8); signed in
- * lands on `/onboarding` or `/feed` based on `profiles.onboarding_completed_at` (AC-1).
+ * route gating: signed out on `/onboarding` or `/feed` goes to `/signin` (spec 0006 AC-8);
+ * signed in lands on `/onboarding` or `/feed` based on `profiles.onboarding_completed_at`
+ * (spec 0006 AC-1), except `/onboarding/import` stays reachable even once onboarded, so a
+ * user can re-import a Letterboxd CSV at any time (spec 0008 AC-8).
  */
 export async function updateSession(
   request: NextRequest,
@@ -45,7 +79,7 @@ export async function updateSession(
   const { pathname } = request.nextUrl;
 
   if (!userId) {
-    if (PROTECTED_PATHS.has(pathname)) {
+    if (isProtectedPath(pathname)) {
       return NextResponse.redirect(new URL(AUTH_PATH, request.url));
     }
     return response;
@@ -57,7 +91,13 @@ export async function updateSession(
   if (pathname === AUTH_PATH) {
     return NextResponse.redirect(new URL(destination, request.url));
   }
-  if (PROTECTED_PATHS.has(pathname) && pathname !== destination) {
+  const reimportingWhileOnboarded =
+    destination === "/feed" && pathname === REIMPORT_PATH;
+  if (
+    isProtectedPath(pathname) &&
+    !isAtDestination(pathname, destination) &&
+    !reimportingWhileOnboarded
+  ) {
     return NextResponse.redirect(new URL(destination, request.url));
   }
 

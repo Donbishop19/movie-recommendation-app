@@ -17,10 +17,10 @@ _You are in charge. Every box below is a **suggestion**, not a gate: run any, sk
 | 4   | Movie catalog integration        | Foundation | done        |
 | 5   | Design system & UI foundation    | Foundation | done        |
 | 6   | Product analytics foundation     | Foundation | done        |
-| 7   | Core discovery loop              | Slice 1    | in-progress |
-| 8   | Letterboxd CSV import onboarding | Slice 2    | planned     |
-| 9   | Vibe search                      | Slice 3    | planned     |
-| 10  | Account & privacy settings       | Slice 4    | planned     |
+| 7   | Core discovery loop              | Slice 1    | done        |
+| 8   | Letterboxd CSV import onboarding | Slice 2    | done        |
+| 9   | Vibe search                      | Slice 3    | in-progress |
+| 10  | Account & privacy settings       | Slice 4    | done        |
 | 11  | Public landing page & SEO        | Slice 5    | planned     |
 
 ## Foundations
@@ -76,14 +76,15 @@ How rich movie metadata (posters, genres, cast, synopsis, ratings) gets sourced 
 Visual language, layout primitives, and base components so onboarding, the feed, and search feel cohesive.
 **Done when:** `design.md` covers type/color/spacing/components, base components handle focus and keyboard, and the WCAG AA baseline is documented.
 
-- [x] Design it (spec): `/architect design system & UI foundation` · spec [0004](../specs/0004-design-system-ui-foundation/index.md)
-- [x] Build it: `/develop design system & UI foundation` · code in `src/design-system/`, `src/app/layout.tsx`, `src/app/page.tsx`, `src/app/dev/components/`, `design.md`, `components.json`, `postcss.config.mjs`
-  - [x] Tailwind CSS v4 + shadcn/ui setup, design tokens (color/type/spacing/radius), and root layout wiring, satisfies AC-1, AC-2
-  - [x] Core interactive and Layout/structure components (button, input, select, checkbox, radio, label, container, stack, card), satisfies AC-3, AC-4, AC-5, AC-6
-  - [x] Navigation and Feedback/overlays components (header/nav, tabs, link, dialog, toast, spinner, badge), plus reduced motion handling, satisfies AC-3, AC-4, AC-7, AC-8
-  - [x] `/dev/components` showcase route, `design.md`, and removal of the create-next-app boilerplate, satisfies AC-9, AC-10, AC-11
-- [x] Verify it: `/check verify design system & UI foundation` (manually verified by the engineer against the running app, not a `/check verify` run)
-- [x] Test it: `/test design system & UI foundation` (manually verified by the engineer against the running app, not a `/test` run)
+- [x] Design it (spec): `/architect design system & UI foundation` · spec [0004](../specs/0004-design-system-ui-foundation/index.md), superseded by [0007](../specs/0007-mobile-first-streaming-redesign/index.md)
+- [x] Build it: `/develop design system & UI foundation` · code in `src/design-system/`, `src/app/layout.tsx`, `src/app/page.tsx`, `src/app/feed/`, `src/app/onboarding/`, `src/app/dev/components/`, `design.md`
+  - [x] Tailwind CSS v4 + shadcn/ui setup, design tokens, and root layout wiring (spec 0004, now superseded direction)
+  - [x] New hero, tab bar, and poster badge tokens, plus the mobile first phone width app shell, satisfies AC-1, AC-2, AC-8
+  - [x] `TabBar`, `HeroSpotlight`, and `Chip`/`ChipGroup` components, plus the restyled poster `Card` with its rating badge, satisfies AC-3, AC-4, AC-5, AC-6, AC-7
+  - [x] Restyle the remaining touched components (button, badge, input, dialog, toast, container, stack, link); WCAG AA checked by construction, a live browser check is still owed (spec 0007 Follow-up), satisfies AC-9, AC-11
+  - [x] `/dev/components` showcase updated and `design.md` rewritten for the new direction, satisfies AC-1, AC-10
+- [x] Verify it: `/check verify design system & UI foundation` (manually verified by the engineer against the running app, 2026-08-12, not a `/check verify` run)
+- [x] Test it: `/test design system & UI foundation` (manually verified by the engineer against the running app, 2026-08-12, not a `/test` run)
 
 ### 6. Product analytics foundation
 
@@ -112,35 +113,56 @@ The walking skeleton: sign in (email + Google OAuth), swipe through movies to on
   - [x] Swipe onboarding: the swipe deck action, the swipe screen, and the swipe action that sets onboarding complete at 10 swipes, satisfies AC-2, AC-3, AC-9 · code in `src/app/actions/onboarding.ts`, `src/app/onboarding/`, `src/movies/movie-poster.tsx`
   - [x] Feed generation and screen: genre overlap ranking, the popularity fallback, the feed list UI, and load more, satisfies AC-4, AC-5, AC-6, AC-9, AC-11 · code in `src/app/actions/feed.ts`, `src/app/feed/`, `src/movies/tmdb-client.ts`
   - [x] Feed engagement: like/dislike on a feed item, feeding back into ratings, satisfies AC-7 · code in `src/app/actions/feed.ts`
-- [ ] Verify it: `/check verify core discovery loop`
-- [ ] Test it: `/test core discovery loop`
+- [ ] Verify it: `/check verify core discovery loop` (skipped on the engineer's call, marked done straight after build)
+- [ ] Test it: `/test core discovery loop` (skipped on the engineer's call, marked done straight after build)
 
 ## Slice 2: Letterboxd CSV import onboarding
 
-### 8. Letterboxd CSV import onboarding · needs a decision
+### 8. Letterboxd CSV import onboarding
 
 A second onboarding path: upload a Letterboxd ratings export CSV, match titles against the catalog, and seed the same taste profile the swipe path builds.
 **Done when:** a user can upload a Letterboxd CSV, see matched vs unmatched titles, and land on a feed seeded from the import, with malformed or unmatched rows handled visibly rather than silently dropped.
 
-- [ ] Design it (spec): `/architect letterboxd CSV import onboarding`
+- [x] Design it (spec): `/architect letterboxd CSV import onboarding` · spec [0008](../specs/0008-letterboxd-csv-import-onboarding/index.md)
+- [x] Build it: `/develop letterboxd CSV import onboarding` · code in `src/imports/`, `src/app/actions/imports.ts`, `src/app/onboarding/`, `src/auth/proxy-session.ts`, `src/proxy.ts`, `supabase/migrations/`
+  - [x] CSV parsing/validation and the title/year TMDB matching module, satisfies AC-2, AC-3
+  - [x] `uploadLetterboxdImport` Server Action plus the `/onboarding` choice screen and `/onboarding/import` upload screen, satisfies AC-1, AC-2, AC-3, AC-4, AC-6, AC-8
+  - [x] Review screen with grouped matched/ambiguous/unmatched sections and ambiguous row resolution, satisfies AC-5
+  - [x] `completeCsvImport` action, review reload, and ownership checks across every action, satisfies AC-7, AC-9
+- [x] Verify it: `/check verify letterboxd CSV import onboarding`
+- [ ] Test it: `/test letterboxd CSV import onboarding` (skipped on the engineer's call, marked done straight after a clean verify)
 
 ## Slice 3: Vibe search
 
-### 9. Vibe search · needs a decision
+### 9. Vibe search
 
 Natural language search over the catalog ("something moody and slow-burn like Blade Runner") that understands vibe, not just title/genre keywords, informed by the user's taste profile.
 **Done when:** a user can type a free text vibe query and get a ranked, relevant result set distinct from keyword/title search, in a reasonable response time.
 
-- [ ] Design it (spec): `/architect vibe search`
+- [x] Design it (spec): `/architect vibe search` · spec [0009](../specs/0009-vibe-search/index.md)
+- [x] Build it: `/develop vibe search` · code in `src/search/`, `src/app/actions/search.ts`, `src/app/search/`, `src/app/api/inngest/`, `src/movies/catalog-cache.ts`, `src/proxy.ts`, `src/auth/proxy-session.ts`, `src/analytics/events.ts`
+  - [x] Embedding pipeline: OpenAI + Inngest setup, the `embedMovie` function, and the HNSW similarity index migration, satisfies AC-9
+  - [x] Vibe search ranking: the `vibeSearch` action (query embedding, cosine similarity, load more), the taste centroid blend, and the empty state/popularity fallback, satisfies AC-1, AC-2, AC-3, AC-4, AC-5
+  - [x] Guardrails and engagement: query validation, the per-user rate limit, and `rateSearchResult`, satisfies AC-6, AC-7, AC-8
+  - [x] Search screen and instrumentation: the `/search` UI (TabBar entry, input, preset chips, result grid, states, inline retry), the analytics event, and Sentry reporting, satisfies AC-1, AC-10, AC-11
+- [ ] Verify it: `/check verify vibe search`
+- [ ] Test it: `/test vibe search`
 
 ## Slice 4: Account & privacy settings
 
-### 10. Account & privacy settings · needs a decision
+### 10. Account & privacy settings
 
 Privacy policy and terms pages, plus account controls: sign out, delete account, and delete the imported/rated data tied to it.
 **Done when:** a user can read the privacy policy, delete their account, and confirm their ratings/import data are removed; the deletion behavior (hard vs soft delete, cascade scope) is recorded.
 
-- [ ] Design it (spec): `/architect account & privacy settings`
+- [x] Design it (spec): `/architect account & privacy settings` · spec [0010](../specs/0010-account-privacy-settings.md)
+- [x] Build it: `/develop account & privacy settings` · code: `src/app/account/`, `src/app/privacy/`, `src/app/terms/`, `src/auth/actions.ts`, `src/auth/admin-client.ts`, `src/auth/constants.ts`, `src/auth/session.ts`, `src/auth/env.ts`
+  - [x] Service role admin client and env var for the Supabase Auth Admin API, satisfies AC-6
+  - [x] Account page, session email, and bottom tab bar wiring (Account tab now links to the page instead of signing out directly), satisfies AC-1, AC-4
+  - [x] Privacy and terms static pages with placeholder content and page metadata, satisfies AC-2, AC-3, AC-10
+  - [x] Delete account flow: analytics event, `deleteAccount` action, and the Danger zone type-to-confirm UI, satisfies AC-5, AC-6, AC-7, AC-8, AC-9
+- [x] Verify it: `/check verify account & privacy settings`
+- [x] Test it: `/test account & privacy settings` (project gate: typecheck + `/check verify`, no automated suite; see `test-preferences.json`)
 
 ## Slice 5: Public landing page & SEO
 
@@ -159,6 +181,8 @@ Out of scope for the current build pass, kept so the plan stays honest.
 - **Notification / recommendation digest email**: welcome email and periodic digest · needs a decision
 - **Admin panel**: internal view to manage users and inspect data · needs a decision
 - **Internationalization**: additional languages/locales · needs a decision
+- **Profile editing**: display name and avatar editing on the account page (columns already exist) · from spec 0010
+- **Download my data export**: a data export alongside account deletion, revisit if a compliance requirement becomes real · from spec 0010
 
 ## Legend
 

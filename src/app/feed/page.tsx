@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
+import { Home, Search, User } from "lucide-react";
 import { Container } from "@/design-system/components/container";
-import { NavBar } from "@/design-system/components/nav-bar";
-import { Button } from "@/design-system/components/button";
-import { signOut } from "@/auth/actions";
+import { TabBar, TabBarItem } from "@/design-system/components/tab-bar";
 import { FeedView } from "./feed-view";
 
 export const metadata: Metadata = {
@@ -13,19 +12,29 @@ export const metadata: Metadata = {
 export default function FeedPage() {
   return (
     <div>
-      <NavBar
-        logo="Movie Recommendation App"
-        actions={
-          <form action={signOut}>
-            <Button type="submit" variant="ghost" size="sm">
-              Sign out
-            </Button>
-          </form>
-        }
-      />
-      <Container as="main" className="py-section">
+      <Container
+        as="main"
+        className="max-w-(--container-sm) py-section pb-[calc(var(--size-tab-bar)+var(--spacing-lg))]"
+      >
         <FeedView />
       </Container>
+      <TabBar>
+        <TabBarItem
+          href="/feed"
+          label="Feed"
+          icon={<Home className="size-5" aria-hidden="true" />}
+        />
+        <TabBarItem
+          href="/search"
+          label="Search"
+          icon={<Search className="size-5" aria-hidden="true" />}
+        />
+        <TabBarItem
+          href="/account"
+          label="Account"
+          icon={<User className="size-5" aria-hidden="true" />}
+        />
+      </TabBar>
     </div>
   );
 }

@@ -257,6 +257,7 @@ export const importRows = pgTable(
     userId: uuid("user_id").notNull(),
     rawTitle: text("raw_title").notNull(),
     rawYear: integer("raw_year"),
+    ratingValue: numeric("rating_value", { precision: 2, scale: 1 }),
     matchedMovieId: uuid("matched_movie_id"),
     candidateMovieIds: uuid("candidate_movie_ids").array(),
     matchStatus: text("match_status").notNull(),

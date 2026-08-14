@@ -20,7 +20,10 @@ export interface NavBarProps {
   className?: string;
 }
 
-/** The site header and primary navigation landmark, present on every page. */
+/**
+ * The signed out shell's header and primary navigation landmark (home, sign in). The
+ * authenticated shell (onboarding, feed) uses `TabBar` instead (spec 0007).
+ */
 export function NavBar({ logo, items = [], actions, className }: NavBarProps) {
   return (
     <header

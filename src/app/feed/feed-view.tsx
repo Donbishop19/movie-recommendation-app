@@ -1,8 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { Star, ThumbsDown, ThumbsUp } from "lucide-react";
 import { getFeed, engageFeedItem, type FeedItem } from "@/app/actions/feed";
 import { MoviePoster } from "@/movies/movie-poster";
+import { AppBackdrop } from "@/design-system/components/app-backdrop";
 import {
   Card,
   CardContent,
@@ -10,6 +12,8 @@ import {
 } from "@/design-system/components/card";
 import { Button } from "@/design-system/components/button";
 import { Badge } from "@/design-system/components/badge";
+import { Chip, ChipGroup } from "@/design-system/components/chip";
+import { HeroSpotlight } from "@/design-system/components/hero-spotlight";
 import { FormErrorSummary } from "@/design-system/components/form-error-summary";
 import { Stack } from "@/design-system/components/stack";
 import { toast } from "@/design-system/lib/toast-store";
@@ -17,7 +21,10 @@ import { toast } from "@/design-system/lib/toast-store";
 type EngagementStatus = "shown" | "liked" | "disliked";
 type FeedRow = FeedItem & { readonly status: EngagementStatus };
 
-/** AC-4, AC-9, AC-11: the personalized feed list, with like/dislike and load more. */
+/**
+ * AC-4, AC-5, AC-6, AC-7, AC-9, AC-11 of spec 0007: the personalized feed, a hero spotlight on
+ * the top ranked recommendation, a cosmetic category chip row, then the rest as a poster grid.
+ */
 export function FeedView() {
   const [items, setItems] = useState<FeedRow[]>([]);
   const [hasMore, setHasMore] = useState(false);
@@ -98,10 +105,13 @@ export function FeedView() {
 
   if (isInitialLoading) {
     return (
-      <Stack gap="md">
-        {[0, 1, 2, 3].map((key) => (
-          <CardSkeleton key={key} className="h-36" />
-        ))}
+      <Stack gap="lg">
+        <CardSkeleton className="aspect-2/3 w-full" />
+        <div className="grid grid-cols-2 gap-md">
+          {[0, 1, 2, 3].map((key) => (
+            <CardSkeleton key={key} className="aspect-2/3 w-full" />
+          ))}
+        </div>
       </Stack>
     );
   }
@@ -132,74 +142,127 @@ export function FeedView() {
     );
   }
 
+  const [top, ...rest] = items;
+
   return (
-    <Stack gap="lg">
-      <h1 className="text-2xl font-medium text-ink">Your feed</h1>
-      <Stack gap="md">
-        {items.map((item) => (
-          <Card key={item.feedItemId} className="flex overflow-hidden">
-            <div className="relative h-36 w-24 shrink-0 bg-canvas">
-              <MoviePoster
-                posterUrl={item.movie.posterUrl}
-                title={item.movie.title}
-              />
-            </div>
-            <CardContent className="flex flex-1 flex-col justify-between gap-sm py-md">
-              <div>
-                <h2 className="text-lg font-medium text-ink">
-                  {item.movie.title}
-                  {item.movie.releaseYear ? (
-                    <span className="text-body">
-                      {" "}
-                      ({item.movie.releaseYear})
-                    </span>
-                  ) : null}
-                </h2>
-                <p className="mt-xxs text-sm text-body">{item.reason}</p>
-              </div>
-              {item.status === "shown" ? (
-                <Stack direction="row" gap="sm">
+    <>
+      <AppBackdrop posterUrl={top?.movie.posterUrl} />
+      <Stack gap="lg">
+        <h1 className="text-2xl font-medium text-ink">Your feed</h1>
+        <ChipGroup label="Categories">
+          <Chip active>For You</Chip>
+        </ChipGroup>
+        {top ? (
+          <HeroSpotlight
+            className="shadow-lg"
+            title={top.movie.title}
+            releaseYear={top.movie.releaseYear}
+            posterUrl={top.movie.posterUrl}
+            reason={top.reason}
+            action={
+              top.status === "shown" ? (
+                <Stack direction="row" gap="sm" className="pt-xs">
                   <Button
                     type="button"
                     variant="secondary"
                     size="sm"
-                    isLoading={pendingItemId === item.feedItemId}
-                    onClick={() =>
-                      void handleEngage(item.feedItemId, "dislike")
-                    }
+                    isLoading={pendingItemId === top.feedItemId}
+                    onClick={() => void handleEngage(top.feedItemId, "dislike")}
                   >
+                    <ThumbsDown className="size-4" aria-hidden="true" />
                     Dislike
                   </Button>
                   <Button
                     type="button"
                     size="sm"
-                    isLoading={pendingItemId === item.feedItemId}
-                    onClick={() => void handleEngage(item.feedItemId, "like")}
+                    isLoading={pendingItemId === top.feedItemId}
+                    onClick={() => void handleEngage(top.feedItemId, "like")}
                   >
+                    <ThumbsUp className="size-4" aria-hidden="true" />
                     Like
                   </Button>
                 </Stack>
               ) : (
-                <Badge
-                  variant={item.status === "liked" ? "success" : "default"}
-                >
-                  {item.status === "liked" ? "Liked" : "Disliked"}
+                <Badge variant={top.status === "liked" ? "success" : "default"}>
+                  {top.status === "liked" ? "Liked" : "Disliked"}
                 </Badge>
-              )}
-            </CardContent>
-          </Card>
-        ))}
+              )
+            }
+          />
+        ) : null}
+        {rest.length > 0 ? (
+          <div className="grid grid-cols-2 gap-md">
+            {rest.map((item) => (
+              <Card key={item.feedItemId} className="overflow-hidden shadow-lg">
+                <div className="relative aspect-2/3 w-full bg-canvas">
+                  <MoviePoster
+                    posterUrl={item.movie.posterUrl}
+                    title={item.movie.title}
+                  />
+                  {item.movie.externalRating ? (
+                    <Badge
+                      variant="rating"
+                      className="absolute right-sm top-sm gap-xxs"
+                    >
+                      <Star className="size-3" aria-hidden="true" />
+                      {item.movie.externalRating}
+                    </Badge>
+                  ) : null}
+                </div>
+                <CardContent className="p-sm">
+                  <h2 className="line-clamp-1 text-sm font-medium text-ink">
+                    {item.movie.title}
+                  </h2>
+                  {item.status === "shown" ? (
+                    <Stack direction="row" gap="xs" className="pt-xs">
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        size="sm"
+                        aria-label="Dislike"
+                        isLoading={pendingItemId === item.feedItemId}
+                        onClick={() =>
+                          void handleEngage(item.feedItemId, "dislike")
+                        }
+                      >
+                        <ThumbsDown className="size-4" aria-hidden="true" />
+                      </Button>
+                      <Button
+                        type="button"
+                        size="sm"
+                        aria-label="Like"
+                        isLoading={pendingItemId === item.feedItemId}
+                        onClick={() =>
+                          void handleEngage(item.feedItemId, "like")
+                        }
+                      >
+                        <ThumbsUp className="size-4" aria-hidden="true" />
+                      </Button>
+                    </Stack>
+                  ) : (
+                    <Badge
+                      variant={item.status === "liked" ? "success" : "default"}
+                      className="mt-xs"
+                    >
+                      {item.status === "liked" ? "Liked" : "Disliked"}
+                    </Badge>
+                  )}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : null}
+        {hasMore ? (
+          <Button
+            variant="secondary"
+            isLoading={isLoadingMore}
+            onClick={() => void load(false)}
+            className="self-center"
+          >
+            Load more
+          </Button>
+        ) : null}
       </Stack>
-      {hasMore ? (
-        <Button
-          variant="secondary"
-          isLoading={isLoadingMore}
-          onClick={() => void load(false)}
-          className="self-center"
-        >
-          Load more
-        </Button>
-      ) : null}
-    </Stack>
+    </>
   );
 }

@@ -5,6 +5,7 @@ import { authEnv } from "./env";
 
 export type Session = {
   readonly userId: string;
+  readonly email: string;
 };
 
 /** A Supabase Auth server client bound to the current request's cookies. */
@@ -36,9 +37,9 @@ export async function requireSession(): Promise<Result<Session, DataError>> {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) {
+  if (!user || !user.email) {
     return err("unauthorized");
   }
 
-  return ok({ userId: user.id });
+  return ok({ userId: user.id, email: user.email });
 }

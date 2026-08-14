@@ -22,6 +22,7 @@ import {
 import { Input } from "@/design-system/components/input";
 import { Label } from "@/design-system/components/label";
 import { Button } from "@/design-system/components/button";
+import { Link } from "@/design-system/components/link";
 import { FormErrorSummary } from "@/design-system/components/form-error-summary";
 import { Stack } from "@/design-system/components/stack";
 
@@ -179,6 +180,18 @@ export function SignInView({ initialOauthDenied }: SignInViewProps) {
               Continue with Google
             </Button>
           </form>
+
+          <p className="text-center text-xs text-muted">
+            By continuing, you agree to our{" "}
+            <Link href="/terms" variant="accent">
+              terms of service
+            </Link>{" "}
+            and{" "}
+            <Link href="/privacy" variant="accent">
+              privacy policy
+            </Link>
+            .
+          </p>
         </Stack>
       </CardContent>
     </Card>

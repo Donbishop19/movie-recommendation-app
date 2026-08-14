@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Home, Star, User } from "lucide-react";
 
 import { Badge } from "@/design-system/components/badge";
 import { Button } from "@/design-system/components/button";
@@ -14,6 +15,7 @@ import {
   CardTitle,
 } from "@/design-system/components/card";
 import { Checkbox } from "@/design-system/components/checkbox";
+import { Chip, ChipGroup } from "@/design-system/components/chip";
 import { Container } from "@/design-system/components/container";
 import {
   Dialog,
@@ -27,6 +29,7 @@ import {
 } from "@/design-system/components/dialog";
 import { FormErrorSummary } from "@/design-system/components/form-error-summary";
 import { Grid, Stack } from "@/design-system/components/stack";
+import { HeroSpotlight } from "@/design-system/components/hero-spotlight";
 import { ImageFallback } from "@/design-system/components/image-fallback";
 import { Input } from "@/design-system/components/input";
 import { Label } from "@/design-system/components/label";
@@ -45,6 +48,11 @@ import {
 } from "@/design-system/components/select";
 import { Skeleton } from "@/design-system/components/skeleton";
 import { Spinner } from "@/design-system/components/spinner";
+import {
+  TabBar,
+  TabBarAction,
+  TabBarItem,
+} from "@/design-system/components/tab-bar";
 import {
   Tabs,
   TabsContent,
@@ -142,7 +150,7 @@ export default function ComponentsShowcasePage() {
       <Container as="main" className="flex flex-col gap-section py-2xl">
         <Stack gap="xs">
           <h1 className="text-3xl font-medium text-ink">Component showcase</h1>
-          <p className="max-w-2xl text-body">
+          <p className="max-w-(--container-2xl) text-body">
             Every base component in the design system, rendered with its
             default, disabled, error, and loading states where it has one. Tab
             through the whole page with the keyboard only and confirm every
@@ -432,7 +440,64 @@ export default function ComponentsShowcasePage() {
             <Badge variant="accent">Accent</Badge>
             <Badge variant="success">Success</Badge>
             <Badge variant="error">Error</Badge>
+            <Badge variant="rating" className="gap-xxs">
+              <Star className="size-3" aria-hidden="true" />
+              7.8
+            </Badge>
           </Stack>
+        </section>
+
+        <section id="mobile-shell" className="flex flex-col gap-md">
+          <h2 className="text-xl font-medium text-ink">
+            Mobile app shell: hero spotlight, chips, tab bar
+          </h2>
+          <p className="max-w-(--container-2xl) text-body">
+            Spec 0007&apos;s three net new components. On the real onboarding
+            and feed pages, `TabBar` is `fixed` to the viewport bottom; here it
+            is pinned in place (`className=&quot;static&quot;`) so it sits
+            inside the showcase flow instead of covering this page.
+          </p>
+          <div className="max-w-(--container-sm)">
+            <HeroSpotlight
+              title="Blade Runner 2049"
+              releaseYear={2017}
+              posterUrl={undefined}
+              reason="Because you liked Arrival's slow burn sci-fi."
+              action={
+                <Stack direction="row" gap="sm" className="pt-xs">
+                  <Button variant="secondary" size="sm">
+                    Dislike
+                  </Button>
+                  <Button size="sm">Like</Button>
+                </Stack>
+              }
+            />
+          </div>
+          <ChipGroup label="Categories demo">
+            <Chip active>For You</Chip>
+            <Chip>Trending</Chip>
+            <Chip>Movies</Chip>
+            <Chip>TV shows</Chip>
+          </ChipGroup>
+          <div className="max-w-(--container-sm) overflow-hidden rounded-lg border border-border">
+            <TabBar className="static inset-auto">
+              <TabBarItem
+                href="#mobile-shell"
+                label="Feed"
+                icon={<Home className="size-5" aria-hidden="true" />}
+              />
+              <TabBarAction
+                label="Account"
+                icon={<User className="size-5" aria-hidden="true" />}
+                action={() => {
+                  toast({
+                    title: "Sign out",
+                    description: "Demo only, no session here.",
+                  });
+                }}
+              />
+            </TabBar>
+          </div>
         </section>
       </Container>
     </div>
