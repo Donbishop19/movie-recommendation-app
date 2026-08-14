@@ -21,7 +21,7 @@ _You are in charge. Every box below is a **suggestion**, not a gate: run any, sk
 | 8   | Letterboxd CSV import onboarding | Slice 2    | done        |
 | 9   | Vibe search                      | Slice 3    | in-progress |
 | 10  | Account & privacy settings       | Slice 4    | done        |
-| 11  | Public landing page & SEO        | Slice 5    | planned     |
+| 11  | Public landing page & SEO        | Slice 5    | in-progress |
 
 ## Foundations
 
@@ -171,7 +171,7 @@ Privacy policy and terms pages, plus account controls: sign out, delete account,
 A signed-out marketing page explaining the product, with basic on-page SEO (metadata, sitemap, social cards), built on the established design system.
 **Done when:** the landing page renders signed out, has page metadata and a sitemap entry, and links into sign in.
 
-- [ ] Build it: `/develop public landing page & SEO`
+- [x] Build it: `/develop public landing page & SEO` · code in `src/app/page.tsx`, `src/app/layout.tsx`, `src/app/sitemap.ts`, `src/app/robots.ts`, `src/app/opengraph-image.tsx`
 
 ## Deferred
 

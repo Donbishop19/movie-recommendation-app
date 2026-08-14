@@ -4,6 +4,7 @@ import "@/design-system/tokens.css";
 
 import { Toaster } from "@/design-system/components/toast";
 import { PostHogProvider } from "@/analytics/posthog-provider";
+import { authEnv } from "@/auth/env";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -16,9 +17,17 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(authEnv.siteUrl),
   title: "Movie Recommendation App",
   description:
     "A personalized movie feed with reasons and a natural language vibe search.",
+  openGraph: {
+    siteName: "Movie Recommendation App",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
 };
 
 /** Root layout: wires the design token stylesheet, dark only color scheme, and base fonts. */
