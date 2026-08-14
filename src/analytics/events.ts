@@ -31,6 +31,7 @@ export type AnalyticsEventMap = {
     readonly movieId: number;
     readonly action: "like" | "dislike";
   };
+  readonly account_deletion_completed: Record<string, never>;
 };
 
 export type EventName = keyof AnalyticsEventMap;

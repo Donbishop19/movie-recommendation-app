@@ -20,7 +20,7 @@ _You are in charge. Every box below is a **suggestion**, not a gate: run any, sk
 | 7   | Core discovery loop              | Slice 1    | done        |
 | 8   | Letterboxd CSV import onboarding | Slice 2    | done        |
 | 9   | Vibe search                      | Slice 3    | in-progress |
-| 10  | Account & privacy settings       | Slice 4    | in-progress |
+| 10  | Account & privacy settings       | Slice 4    | done        |
 | 11  | Public landing page & SEO        | Slice 5    | planned     |
 
 ## Foundations
@@ -156,13 +156,13 @@ Privacy policy and terms pages, plus account controls: sign out, delete account,
 **Done when:** a user can read the privacy policy, delete their account, and confirm their ratings/import data are removed; the deletion behavior (hard vs soft delete, cascade scope) is recorded.
 
 - [x] Design it (spec): `/architect account & privacy settings` · spec [0010](../specs/0010-account-privacy-settings.md)
-- [ ] Build it: `/develop account & privacy settings`
-  - [ ] Service role admin client and env var for the Supabase Auth Admin API, satisfies AC-6
-  - [ ] Account page, session email, and bottom tab bar wiring (Account tab now links to the page instead of signing out directly), satisfies AC-1, AC-4
-  - [ ] Privacy and terms static pages with placeholder content and page metadata, satisfies AC-2, AC-3, AC-10
-  - [ ] Delete account flow: analytics event, `deleteAccount` action, and the Danger zone type-to-confirm UI, satisfies AC-5, AC-6, AC-7, AC-8, AC-9
-- [ ] Verify it: `/check verify account & privacy settings`
-- [ ] Test it: `/test account & privacy settings`
+- [x] Build it: `/develop account & privacy settings` · code: `src/app/account/`, `src/app/privacy/`, `src/app/terms/`, `src/auth/actions.ts`, `src/auth/admin-client.ts`, `src/auth/constants.ts`, `src/auth/session.ts`, `src/auth/env.ts`
+  - [x] Service role admin client and env var for the Supabase Auth Admin API, satisfies AC-6
+  - [x] Account page, session email, and bottom tab bar wiring (Account tab now links to the page instead of signing out directly), satisfies AC-1, AC-4
+  - [x] Privacy and terms static pages with placeholder content and page metadata, satisfies AC-2, AC-3, AC-10
+  - [x] Delete account flow: analytics event, `deleteAccount` action, and the Danger zone type-to-confirm UI, satisfies AC-5, AC-6, AC-7, AC-8, AC-9
+- [x] Verify it: `/check verify account & privacy settings`
+- [x] Test it: `/test account & privacy settings` (project gate: typecheck + `/check verify`, no automated suite; see `test-preferences.json`)
 
 ## Slice 5: Public landing page & SEO
 

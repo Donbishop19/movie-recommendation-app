@@ -7,11 +7,12 @@ const AUTH_PATH = "/signin";
 /** Spec 0008 AC-8: an already onboarded user must still be able to reach this one route, to re-import. */
 const REIMPORT_PATH = "/onboarding/import";
 
-/** `/onboarding` and every onboarding sub-route (`/onboarding/swipe`, `/onboarding/import`, …), plus `/feed` and `/search`. */
+/** `/onboarding` and every onboarding sub-route (`/onboarding/swipe`, `/onboarding/import`, …), plus `/feed`, `/search`, and `/account`. */
 function isProtectedPath(pathname: string): boolean {
   return (
     pathname === "/feed" ||
     pathname === "/search" ||
+    pathname === "/account" ||
     pathname === "/onboarding" ||
     pathname.startsWith("/onboarding/")
   );
@@ -23,11 +24,18 @@ function isAtDestination(
   destination: "/feed" | "/onboarding",
 ): boolean {
   if (destination === "/feed") {
-    // Spec 0009: vibe search is reachable alongside the feed once onboarded, not a separate
-    // destination of its own.
-    return pathname === "/feed" || pathname === "/search";
+    // Spec 0009: vibe search, and spec 0010: account settings, are both reachable alongside the
+    // feed once onboarded, not separate destinations of their own.
+    return (
+      pathname === "/feed" || pathname === "/search" || pathname === "/account"
+    );
   }
-  return pathname === "/onboarding" || pathname.startsWith("/onboarding/");
+  // Spec 0010: account settings, notably deletion, must stay reachable even mid onboarding.
+  return (
+    pathname === "/onboarding" ||
+    pathname.startsWith("/onboarding/") ||
+    pathname === "/account"
+  );
 }
 
 /**

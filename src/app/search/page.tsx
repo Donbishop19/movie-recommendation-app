@@ -1,12 +1,7 @@
 import type { Metadata } from "next";
 import { Home, Search as SearchIcon, User } from "lucide-react";
 import { Container } from "@/design-system/components/container";
-import {
-  TabBar,
-  TabBarItem,
-  TabBarAction,
-} from "@/design-system/components/tab-bar";
-import { signOut } from "@/auth/actions";
+import { TabBar, TabBarItem } from "@/design-system/components/tab-bar";
 import { SearchView } from "./search-view";
 
 export const metadata: Metadata = {
@@ -34,10 +29,10 @@ export default function SearchPage() {
           label="Search"
           icon={<SearchIcon className="size-5" aria-hidden="true" />}
         />
-        <TabBarAction
+        <TabBarItem
+          href="/account"
           label="Account"
           icon={<User className="size-5" aria-hidden="true" />}
-          action={signOut}
         />
       </TabBar>
     </div>

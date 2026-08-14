@@ -3,9 +3,12 @@
 import * as Sentry from "@sentry/nextjs";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { createSessionClient } from "@/auth/session";
+import { createSessionClient, requireSession } from "@/auth/session";
+import { createAdminClient } from "@/auth/admin-client";
 import { authEnv } from "@/auth/env";
+import { trackServer } from "@/analytics/server";
 import { ok, err, type Result } from "@/shared/result";
+import { DELETE_ACCOUNT_CONFIRMATION_PHRASE } from "@/auth/constants";
 
 export type SignUpError = "email_taken" | "weak_password" | "unknown";
 export type SignUpState = Result<void, SignUpError> | undefined;
@@ -116,6 +119,62 @@ export async function signInWithGoogle(): Promise<void> {
 
 /** Signs out the current session and returns the caller to `/signin`. */
 export async function signOut(): Promise<void> {
+  try {
+    const supabase = await createSessionClient();
+    await supabase.auth.signOut();
+  } catch (error) {
+    Sentry.captureException(error);
+  }
+
+  revalidatePath("/", "layout");
+  redirect("/signin");
+}
+
+export type DeleteAccountError =
+  "confirmation_mismatch" | "unauthorized" | "unknown";
+export type DeleteAccountState = Result<void, DeleteAccountError> | undefined;
+
+/**
+ * Deletes the caller's own account: `auth.users` via the Supabase Auth Admin API, which
+ * cascades through `profiles` to every owned row (ratings, imports, feed items), per spec
+ * 0010 AC-6. Only ever targets the authenticated caller's own id (AC-9), and requires the
+ * confirmation phrase to match server side even though the UI already gates on it (AC-5).
+ * Irreversible: does not run unless both checks pass.
+ */
+export async function deleteAccount(
+  _prevState: DeleteAccountState,
+  formData: FormData,
+): Promise<DeleteAccountState> {
+  const session = await requireSession();
+  if (!session.ok) {
+    return err("unauthorized");
+  }
+
+  const confirmation = String(formData.get("confirm") ?? "");
+  if (confirmation !== DELETE_ACCOUNT_CONFIRMATION_PHRASE) {
+    return err("confirmation_mismatch");
+  }
+
+  const { userId } = session.value;
+
+  try {
+    Sentry.addBreadcrumb({
+      category: "account",
+      message: "Account deletion requested",
+      data: { userId },
+    });
+    trackServer("account_deletion_completed", userId, {});
+
+    const { error } = await createAdminClient().auth.admin.deleteUser(userId);
+    if (error) {
+      Sentry.captureException(error);
+      return err("unknown");
+    }
+  } catch (error) {
+    Sentry.captureException(error);
+    return err("unknown");
+  }
+
   try {
     const supabase = await createSessionClient();
     await supabase.auth.signOut();

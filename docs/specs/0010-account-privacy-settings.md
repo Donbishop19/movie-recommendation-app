@@ -1,7 +1,7 @@
 # 0010. Account and privacy settings
 
 **Date**: 2026-08-13
-**Status**: Proposed
+**Status**: Accepted
 
 ## Summary
 

@@ -1,12 +1,7 @@
 import type { ReactNode } from "react";
 import { Home, User } from "lucide-react";
 import { Container } from "@/design-system/components/container";
-import {
-  TabBar,
-  TabBarItem,
-  TabBarAction,
-} from "@/design-system/components/tab-bar";
-import { signOut } from "@/auth/actions";
+import { TabBar, TabBarItem } from "@/design-system/components/tab-bar";
 
 /** The onboarding app shell: choice screen, swipe deck, and CSV import all share this. */
 export default function OnboardingLayout({
@@ -31,10 +26,10 @@ export default function OnboardingLayout({
           label="Feed"
           icon={<Home className="size-5" aria-hidden="true" />}
         />
-        <TabBarAction
+        <TabBarItem
+          href="/account"
           label="Account"
           icon={<User className="size-5" aria-hidden="true" />}
-          action={signOut}
         />
       </TabBar>
     </div>
