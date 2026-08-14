@@ -173,6 +173,7 @@ A signed-out marketing page explaining the product, with basic on-page SEO (meta
 
 - [x] Build it: `/develop public landing page & SEO` · code in `src/app/page.tsx`, `src/app/layout.tsx`, `src/app/sitemap.ts`, `src/app/robots.ts`, `src/app/opengraph-image.tsx`
 - [x] Verify it: `/check verify public landing page & SEO`
+- [x] Test it: `/test public landing page & SEO` (project gate: typecheck + `/check verify`, no automated suite; see `test-preferences.json`)
 
 ## Deferred
 
