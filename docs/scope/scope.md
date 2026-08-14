@@ -172,6 +172,7 @@ A signed-out marketing page explaining the product, with basic on-page SEO (meta
 **Done when:** the landing page renders signed out, has page metadata and a sitemap entry, and links into sign in.
 
 - [x] Build it: `/develop public landing page & SEO` · code in `src/app/page.tsx`, `src/app/layout.tsx`, `src/app/sitemap.ts`, `src/app/robots.ts`, `src/app/opengraph-image.tsx`
+- [x] Verify it: `/check verify public landing page & SEO`
 
 ## Deferred
 
