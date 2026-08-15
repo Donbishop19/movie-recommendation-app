@@ -5,7 +5,7 @@ import { TabBar, TabBarItem } from "@/design-system/components/tab-bar";
 import { SearchView } from "./search-view";
 
 export const metadata: Metadata = {
-  title: "Vibe search — Movie Recommendation App",
+  title: "Vibe search — TellaMovie",
 };
 
 /** AC-1, AC-11 of spec 0009: the vibe search screen and its tab in the authenticated shell. */

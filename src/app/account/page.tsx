@@ -7,7 +7,7 @@ import { requireSession } from "@/auth/session";
 import { AccountView } from "./account-view";
 
 export const metadata: Metadata = {
-  title: "Account — Movie Recommendation App",
+  title: "Account — TellaMovie",
 };
 
 /** AC-1, AC-4 of spec 0010: the account screen, reachable from the bottom tab bar. */

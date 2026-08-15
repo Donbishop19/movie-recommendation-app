@@ -15,7 +15,7 @@ export default function Image() {
         justifyContent: "center",
         gap: 28,
         padding: 96,
-        backgroundColor: "#0c0a08",
+        backgroundColor: "#0b0f1c",
       }}
     >
       <div
@@ -24,10 +24,10 @@ export default function Image() {
           fontSize: 32,
           fontWeight: 700,
           letterSpacing: -0.5,
-          color: "#f5a524",
+          color: "#3491ef",
         }}
       >
-        Movie Recommendation App
+        TellaMovie
       </div>
       <div
         style={{
@@ -36,17 +36,17 @@ export default function Image() {
           fontWeight: 700,
           lineHeight: 1.15,
           maxWidth: 920,
-          color: "#f2ecdd",
+          color: "#f2f4fb",
         }}
       >
-        A movie feed that knows your taste, and can say why.
+        Find the best movies and shows to watch with friends.
       </div>
       <div
         style={{
           display: "flex",
           fontSize: 28,
           maxWidth: 820,
-          color: "#a79c89",
+          color: "#aab2c8",
         }}
       >
         Swipe, import your Letterboxd ratings, or search by vibe.

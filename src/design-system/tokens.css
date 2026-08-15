@@ -8,17 +8,24 @@
 @import "tw-animate-css"; /* the `animate-in` / `fade-in-0` / `zoom-in-95` open-close utilities used by dialog, select, and toast */
 
 @theme {
-  /* Color: warm, amber-tinted neutral ladder from canvas to ink, one accent hue. */
-  --color-canvas: #0c0a08; /* page background */
-  --color-surface: #17140f; /* card, panel, raised area */
-  --color-border: #6b6148; /* hairline, divider, input/button outline (3:1 on surface) */
-  --color-muted: #96897a; /* captions, placeholders (5.8:1 on canvas) */
-  --color-body: #a79c89; /* secondary text (7.3:1 on canvas) */
-  --color-ink: #f2ecdd; /* primary text, headings (16.8:1 on canvas) */
-  --color-accent: #f5a524; /* amber, primary actions and focus rings (9.7:1 on canvas) */
-  --color-on-accent: #1a1206; /* text/icons on top of the accent fill (9.1:1 on accent) */
-  --color-success: #5fbf6b; /* 8.6:1 on canvas */
-  --color-error: #e5484d; /* 5.1:1 on canvas */
+  /* Color: cool navy neutral ladder from canvas to ink, one blue accent (rebrand, 2026-08-15). */
+  --color-canvas: #0b0f1c; /* page background */
+  --color-surface: #141b2e; /* card, panel, raised area */
+  --color-border: #5b6892; /* hairline, divider, input/button outline (3.5:1 on canvas, 3.1:1 on surface) */
+  --color-muted: #8a92ab; /* captions, placeholders (6.2:1 on canvas) */
+  --color-body: #aab2c8; /* secondary text (9.0:1 on canvas) */
+  --color-ink: #f2f4fb; /* primary text, headings (17.4:1 on canvas) */
+  --color-accent: #3491ef; /* blue, primary actions and focus rings (5.9:1 on canvas) */
+  --color-on-accent: #0a1020; /* text/icons on top of the accent fill (5.8:1 on accent) */
+  --color-success: #4fbf7a; /* 8.3:1 on canvas */
+  --color-error: #ef5a63; /* 5.7:1 on canvas */
+
+  /* Marketing frame: the light backdrop and its dark floating card, signed-out shell only
+     (home, sign in, terms, privacy). Never used inside the authenticated app shell, whose
+     TabBar is fixed to the true viewport edge. */
+  --color-backdrop-from: #f1e9fb;
+  --color-backdrop-via: #d9c6f3;
+  --color-backdrop-to: #b8a2e6;
 
   /* Type: Geist Sans / Geist Mono, loaded as CSS variables in the root layout. */
   --font-sans:
@@ -65,17 +72,19 @@
   --container-xl: 36rem;
   --container-2xl: 42rem;
 
-  /* Radius: four steps. `lg` added for spec 0007 (the mobile first streaming redesign):
-     poster cards and the hero spotlight read as too sharp at radius-md. */
+  /* Radius: five steps. `lg` added for spec 0007 (the mobile first streaming redesign):
+     poster cards and the hero spotlight read as too sharp at radius-md. `xl` added for the
+     rebrand's marketing frame, the floating card the signed-out shell sits inside. */
   --radius-sm: 0.25rem; /* inputs, buttons */
   --radius-md: 0.5rem; /* small surfaces, dialogs */
   --radius-lg: 1rem; /* poster cards, the hero spotlight */
+  --radius-xl: 2rem; /* the marketing frame's floating card */
   --radius-full: 9999px; /* pills, avatars, chips */
 
   /* Scrim: canvas repeated as its own token so gradient overlays and badges sitting on top
      of a movie poster image have one dedicated value to tune, independent of the page
      background it happens to match today. Spec 0007. */
-  --color-scrim: #0c0a08;
+  --color-scrim: #0b0f1c;
 
   /* Motion: one standard ease, one spring. Durations referenced via arbitrary value
      syntax (duration-(--duration-base)) since Tailwind has no named duration theme key. */
@@ -120,4 +129,17 @@ body {
 
 * {
   border-color: var(--color-border);
+}
+
+/* Marketing frame backdrop: the light gradient behind the floating dark card on the
+   signed-out shell (home, sign in, terms, privacy) only. Decorative, no text sits directly
+   on it, so it carries no contrast requirement of its own. Never applied to the authenticated
+   app shell, whose fixed TabBar needs the true (dark) viewport edge. */
+.marketing-backdrop {
+  background: radial-gradient(
+    120% 100% at 50% -10%,
+    var(--color-backdrop-from) 0%,
+    var(--color-backdrop-via) 55%,
+    var(--color-backdrop-to) 100%
+  );
 }

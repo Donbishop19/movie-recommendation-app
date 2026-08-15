@@ -18,11 +18,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(authEnv.siteUrl),
-  title: "Movie Recommendation App",
+  title: "TellaMovie",
   description:
     "A personalized movie feed with reasons and a natural language vibe search.",
   openGraph: {
-    siteName: "Movie Recommendation App",
+    siteName: "TellaMovie",
     type: "website",
   },
   twitter: {

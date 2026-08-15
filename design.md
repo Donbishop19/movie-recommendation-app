@@ -1,9 +1,9 @@
 ---
 name: mobile-first-streaming-design-system
-source: derived, reference image (docs/specs/0007-mobile-first-streaming-redesign)
-character: "A dark, mobile first streaming app: a warm near black canvas, one confident amber accent, a hero spotlight up top on the feed, and a persistent bottom tab bar on the authenticated shell. Reads as a movie app in your pocket, not a desktop dashboard."
+source: derived, reference image (docs/specs/0007-mobile-first-streaming-redesign); recolored to a navy/blue palette and a marketing-frame pattern on 2026-08-15 per a second reference image, brand renamed to TellaMovie
+character: "A dark, mobile first streaming app: a cool near black canvas, one confident blue accent, a hero spotlight up top on the feed, and a persistent bottom tab bar on the authenticated shell. Reads as a movie app in your pocket, not a desktop dashboard. The signed out shell additionally floats its content as a rounded dark card on a light lavender backdrop (2026-08-15 rebrand)."
 tokens: "real values live in src/design-system/tokens.css (Tailwind v4's @theme, no tailwind.config.js); read them there, never duplicated here"
-contrast: "body 7.3:1 / ink 16.8:1 / muted 5.8:1 / accent 9.7:1, all on canvas; on-accent 9.1:1 on accent; border 3.0:1 on surface. Colors unchanged from the 2026-08-10 verification (spec 0004); the two genuinely new treatments this redesign adds, the hero gradient overlay and the tab bar, were re checked 2026-08-11. See docs/specs/0007-mobile-first-streaming-redesign/index.md."
+contrast: "body 9.0:1 / ink 17.4:1 / muted 6.2:1 / accent 5.9:1, all on canvas; on-accent 5.8:1 on accent; border 3.5:1 on canvas, 3.1:1 on surface. Recolored and reverified 2026-08-15 (amber → blue rebrand); the marketing backdrop gradient is decorative only, no text sits directly on it, so it carries no contrast number of its own. See docs/specs/0007-mobile-first-streaming-redesign/index.md for the prior amber-era verification record."
 ---
 
 ## Build mandate
@@ -16,15 +16,25 @@ mode to fall back to and no toggle to build.
 
 ## Character & direction
 
-Amber on near black, one accent, no competing hues, unchanged from the original direction. What
-changed (spec 0007) is the shape of the product around that palette: the authenticated app shell
-(onboarding, feed) now reads as a mobile streaming app, a large hero recommendation with a
-gradient overlay, rounded poster cards with a rating badge, a pill shaped chip row, and a
-persistent bottom tab bar, constrained to a centered phone width column at every viewport size,
-not a desktop dashboard that happens to also work on a phone. The signed out shell (home, sign
-in) keeps the original top `NavBar` and a wider reading width; it was not part of this redesign.
-Low chrome carries over: hairline borders over shadows for most separation, a shadow reserved for
-genuinely elevated surfaces (dialogs, dropdowns, toasts).
+Blue on near black, one accent, no competing hues (rebrand, 2026-08-15; amber was the original
+accent, see spec 0007 for that record). What changed with spec 0007 is the shape of the product
+around the palette: the authenticated app shell (onboarding, feed) reads as a mobile streaming
+app, a large hero recommendation with a gradient overlay, rounded poster cards with a rating
+badge, a pill shaped chip row, and a persistent bottom tab bar, constrained to a centered phone
+width column at every viewport size, not a desktop dashboard that happens to also work on a
+phone. Low chrome carries over: hairline borders over shadows for most separation, a shadow
+reserved for genuinely elevated surfaces (dialogs, dropdowns, toasts).
+
+The 2026-08-15 rebrand changed the signed out shell specifically (home, sign in, terms, privacy):
+its content now floats as one or more rounded (`radius-xl`) dark cards on a light lavender
+gradient backdrop (`.marketing-backdrop`, `--color-backdrop-from/via/to` in tokens.css), instead
+of a full bleed dark page under a sticky `NavBar`. This is a page chrome change only: text inside
+each card still uses the same dark-surface ink/body/muted ladder as everywhere else in the app,
+so no second (light mode) text ladder exists and every existing AA verification still holds. The
+backdrop is decorative and never carries text directly. This pattern is deliberately scoped to the
+signed out shell and must never wrap the authenticated shell: its `TabBar` is fixed to the true
+viewport bottom, and a page level margin would visually detach it from the edge it needs to sit
+flush against.
 
 ## Color palette
 
@@ -32,27 +42,35 @@ All values are CSS custom properties in `src/design-system/tokens.css`, consumed
 Tailwind's `@theme` (so `bg-canvas`, `text-ink`, `border-border`, etc. are real utility classes).
 Dark only: these are the only values, there is no light mode variant.
 
-| Token               | Hex       | Role                                                          | Contrast                          |
-| ------------------- | --------- | ------------------------------------------------------------- | --------------------------------- |
-| `--color-canvas`    | `#0c0a08` | Page background                                               | —                                 |
-| `--color-scrim`     | `#0c0a08` | Gradient overlays and badges on poster art (added, spec 0007) | matches canvas                    |
-| `--color-surface`   | `#17140f` | Card, panel, raised area                                      | —                                 |
-| `--color-border`    | `#6b6148` | Hairline, divider, input/button outline                       | 3.0:1 on surface                  |
-| `--color-muted`     | `#96897a` | Captions, placeholders                                        | 5.8:1 on canvas                   |
-| `--color-body`      | `#a79c89` | Secondary text                                                | 7.3:1 on canvas                   |
-| `--color-ink`       | `#f2ecdd` | Primary text, headings                                        | 16.8:1 on canvas                  |
-| `--color-accent`    | `#f5a524` | Primary actions, links, focus rings                           | 9.7:1 on canvas, 9.0:1 on surface |
-| `--color-on-accent` | `#1a1206` | Text/icons on top of the accent fill                          | 9.1:1 on accent                   |
-| `--color-success`   | `#5fbf6b` | Positive status                                               | 8.6:1 on canvas                   |
-| `--color-error`     | `#e5484d` | Errors, destructive actions                                   | 5.1:1 on canvas                   |
+| Token                          | Hex                               | Role                                                                  | Contrast                          |
+| ------------------------------ | --------------------------------- | --------------------------------------------------------------------- | --------------------------------- |
+| `--color-canvas`               | `#0b0f1c`                         | Page background                                                       | —                                 |
+| `--color-scrim`                | `#0b0f1c`                         | Gradient overlays and badges on poster art (added, spec 0007)         | matches canvas                    |
+| `--color-surface`              | `#141b2e`                         | Card, panel, raised area                                              | —                                 |
+| `--color-border`               | `#5b6892`                         | Hairline, divider, input/button outline                               | 3.5:1 on canvas, 3.1:1 on surface |
+| `--color-muted`                | `#8a92ab`                         | Captions, placeholders                                                | 6.2:1 on canvas                   |
+| `--color-body`                 | `#aab2c8`                         | Secondary text                                                        | 9.0:1 on canvas                   |
+| `--color-ink`                  | `#f2f4fb`                         | Primary text, headings                                                | 17.4:1 on canvas                  |
+| `--color-accent`               | `#3491ef`                         | Primary actions, links, focus rings                                   | 5.9:1 on canvas, 5.3:1 on surface |
+| `--color-on-accent`            | `#0a1020`                         | Text/icons on top of the accent fill                                  | 5.8:1 on accent                   |
+| `--color-success`              | `#4fbf7a`                         | Positive status                                                       | 8.3:1 on canvas                   |
+| `--color-error`                | `#ef5a63`                         | Errors, destructive actions                                           | 5.7:1 on canvas                   |
+| `--color-backdrop-from/via/to` | `#f1e9fb` / `#d9c6f3` / `#b8a2e6` | Marketing frame's light gradient (signed out shell, added 2026-08-15) | decorative, no text sits on it    |
 
 **Usage rules:** the accent is for primary actions, links, and focus rings only, never for
 decoration or large fills (a whole card in accent, a hero background wash). `--color-scrim` is
 for text and badges sitting on top of image content (the hero spotlight's gradient, the poster
 rating badge), never as a general surface color; it is deliberately the same value as canvas so
-text over a fully opaque scrim keeps the already verified 16.8:1 ink on canvas contrast, fading
+text over a fully opaque scrim keeps the already verified 17.4:1 ink on canvas contrast, fading
 out toward the top of a gradient. One accent hue for the whole system; a second accent is a
-decision, not a default, and none is defined here.
+decision, not a default, and none is defined here. On-accent uses dark text on the accent fill
+(mirroring the original amber direction) rather than white text: at this blue's hue, no single
+lightness cleared AA (4.5:1) for both white-on-accent buttons and accent-as-body-text on canvas at
+once, while dark-on-accent clears both roles with one color pair (5.8:1 and 5.9:1) — so buttons
+keep dark text even though the reference image this rebrand followed used white on blue.
+`--color-backdrop-*` is exempt from the "accent is the only saturated color" rule: it is a neutral
+light gradient, not a hue competing with the accent, and it is confined to the signed out shell's
+page background.
 
 ## Typography
 
@@ -87,10 +105,11 @@ scale is the escape hatch for a one off value that still needs to land on the 4p
 
 ## Radius and motion
 
-Four radius steps (a fourth, `radius-lg`, was added for this redesign; the original three carry
-over unchanged): `radius-sm` (4px, inputs and buttons), `radius-md` (8px, small surfaces and
-dialogs), `radius-lg` (16px, poster cards and the hero spotlight), `radius-full` (pills, avatars,
-chips). One standard ease (`ease-standard`, `cubic-bezier(0.4, 0, 0.2, 1)`) for ordinary
+Five radius steps (`radius-lg` added for spec 0007, `radius-xl` added for the 2026-08-15 rebrand;
+the original three carry over unchanged): `radius-sm` (4px, inputs and buttons), `radius-md` (8px,
+small surfaces and dialogs), `radius-lg` (16px, poster cards and the hero spotlight), `radius-xl`
+(32px, the marketing frame's floating card), `radius-full` (pills, avatars, chips). One standard
+ease (`ease-standard`, `cubic-bezier(0.4, 0, 0.2, 1)`) for ordinary
 transitions, one spring (`ease-spring`, `cubic-bezier(0.34, 1.56, 0.64, 1)`) reserved for playful
 open/close moments. Three durations as plain CSS variables (referenced via Tailwind's
 `duration-(--duration-base)` arbitrary value syntax, since Tailwind has no named duration theme
@@ -106,9 +125,13 @@ disables its animation outright (the loading spinner becomes a pulse, skeletons 
 
 Two page shells now exist, not one:
 
-- **Signed out shell** (home, sign in): unchanged from the original direction. A `NavBar` (sticky,
-  translucent on scroll) followed by a `Container` capping content at a wider reading width and
-  centering it, holding a vertical `Stack` of sections at `gap-section` rhythm.
+- **Signed out shell** (home, sign in, terms, privacy): as of the 2026-08-15 rebrand, home sits
+  inside `.marketing-backdrop` — a light lavender gradient page background — with its content
+  floated in one or more rounded (`radius-xl`) dark cards on top, each a wider reading width,
+  centered, holding a vertical `Stack` of sections at `gap-section` rhythm. The plainer chrome
+  (sign in, terms, privacy) still uses the original top `NavBar` (sticky, translucent on scroll)
+  directly on the dark canvas, no lavender frame — the marketing treatment is reserved for the
+  page actually selling the product.
 - **Authenticated app shell** (onboarding, feed): a `TabBar` fixed to the viewport bottom instead
   of a top `NavBar`, and a `Container` constrained to `max-w-(--container-sm)` (a centered phone
   width column) at every viewport size, not just on small screens. Page content gets bottom

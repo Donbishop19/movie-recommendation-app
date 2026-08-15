@@ -12,7 +12,7 @@ import { Link } from "@/design-system/components/link";
 import { Stack } from "@/design-system/components/stack";
 
 export const metadata: Metadata = {
-  title: "Onboarding — Movie Recommendation App",
+  title: "Onboarding — TellaMovie",
 };
 
 /** AC-1, spec 0008: lets a not yet onboarded user pick swipe onboarding or Letterboxd CSV import. */
