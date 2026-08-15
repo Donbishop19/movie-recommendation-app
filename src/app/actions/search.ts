@@ -66,7 +66,7 @@ export async function vibeSearch(
   try {
     const embedResult = await embedText(trimmed);
     if (!embedResult.ok) {
-      reportEmbeddingError("vibeSearch", new Error("query embed failed"));
+      reportEmbeddingError("vibeSearch", embedResult.error);
       return err("unknown");
     }
     const queryEmbedding = embedResult.value;
