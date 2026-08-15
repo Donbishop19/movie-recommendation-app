@@ -33,7 +33,13 @@ const DEFAULT_BATCH_SIZE = 20;
 const MIN_LIKES_FOR_SIGNAL = 3;
 const TOP_GENRE_COUNT = 3;
 const SHOWN_EXCLUSION_DAYS = 14;
-const MAX_CANDIDATE_PAGES = 5;
+/**
+ * Upper bound on TMDB pages scanned per call. Must stay well above what a 14 day exclusion
+ * window can exhaust for an active user, or `getFeed` starts returning empty (AC-11): the loop
+ * always restarts at page 1, so a small cap here re-scans the same already-excluded window on
+ * every call instead of advancing past it.
+ */
+const MAX_CANDIDATE_PAGES = 25;
 const LIKED_RATING_VALUE = "4.5";
 
 type Candidate = { readonly row: Awaited<ReturnType<typeof listUpsert>> };
