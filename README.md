@@ -1,36 +1,112 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# TellaMovie
 
-## Getting Started
+A movie recommendation app: import your Letterboxd ratings, get a personalized feed, and search by vibe (natural-language, embedding-based search) instead of just title or genre.
 
-First, run the development server:
+## Stack
+
+- **Language / runtime**: TypeScript, Node.js
+- **Framework**: Next.js 16 (App Router), Server Actions and Route Handlers
+- **Database**: Supabase Postgres (+ pgvector), accessed via Drizzle ORM
+- **Auth**: Supabase Auth
+- **Background jobs**: Inngest
+- **Search**: OpenAI embeddings over movie data (pgvector similarity search)
+- **Catalog data**: TMDB
+- **Observability / analytics**: Sentry, PostHog
+- **Hosting**: Vercel
+- **Package manager**: pnpm
+
+## Getting started
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Environment variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Copy the variable names below into `.env.local` and fill in real values (ask a maintainer for staging credentials, or provision your own Supabase/TMDB/OpenAI/Inngest/Sentry/PostHog accounts). Each is validated at startup by the owning feature's `env.ts` — the app fails loudly if one is missing.
 
-## Learn More
+```bash
+# Supabase
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+DATABASE_URL=          # pooled connection string, transaction mode
+DIRECT_URL=            # direct, non-pooled connection string (drizzle-kit only)
 
-To learn more about Next.js, take a look at the following resources:
+# App
+NEXT_PUBLIC_SITE_URL=
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Movie catalog (TMDB)
+TMDB_READ_ACCESS_TOKEN=
+CATALOG_REFRESH_SECRET=
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# Vibe search (OpenAI + Inngest)
+OPENAI_API_KEY=
+INNGEST_EVENT_KEY=
+INNGEST_SIGNING_KEY=
 
-## Deploy on Vercel
+# Observability
+SENTRY_DSN=
+NEXT_PUBLIC_SENTRY_DSN=
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# Analytics
+NEXT_PUBLIC_POSTHOG_KEY=
+POSTHOG_HOST=
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Commands
+
+```bash
+pnpm dev             # dev server
+pnpm build            # production build
+pnpm start            # run a production build
+pnpm run lint          # ESLint
+pnpm run lint:fix       # ESLint, auto-fix
+pnpm run format         # Prettier, write
+pnpm run format:check    # Prettier, check only
+pnpm run typecheck       # tsc --noEmit
+pnpm run db:pull        # pull the DB schema via drizzle-kit
+```
+
+There's no automated test suite yet; correctness is verified with `pnpm run typecheck` plus manual verification. Pre-commit runs lint, format, and typecheck via Husky.
+
+## Project structure
+
+Source is organized by feature, not by technical layer:
+
+```
+src/
+  analytics/       PostHog event tracking (server + client)
+  app/             Next.js App Router routes
+  auth/            Supabase Auth, sessions, onboarding
+  db/              Drizzle client and schema
+  design-system/   Shared UI components and design tokens
+  imports/         Letterboxd CSV import and matching
+  movies/          Movie catalog (TMDB) and poster rendering
+  observability/   Sentry setup
+  search/          Vibe search: embeddings, vector queries, rate limiting
+  shared/          Cross-feature utilities (e.g. Result type)
+```
+
+Each feature that needs environment variables validates them in its own `env.ts`.
+
+## Database
+
+Schema changes are SQL files in `supabase/migrations/`, applied with the Supabase CLI:
+
+```bash
+supabase db push
+```
+
+Row Level Security is on for every table with deny-by-default policies. Staging is a separate Supabase project; Vercel preview deployments point at staging, not production.
+
+## Specs
+
+Feature specs live in `docs/specs/` (`NNNN-title.md`), written by `/architect` before a feature is built.
+
+## Contributing
+
+See [AGENTS.md](./AGENTS.md) for the full set of conventions (functional style, error handling, naming, commit format, and the agent skills used to build this project).
