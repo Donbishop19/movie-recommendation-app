@@ -2,7 +2,11 @@ import { eq } from "drizzle-orm";
 import { staticSchema } from "inngest";
 import { db } from "@/db/client";
 import { movies } from "@/db/drizzle/schema";
-import { embedText, reportEmbeddingError } from "./openai-client";
+import {
+  embedText,
+  isPermanentEmbedError,
+  reportEmbeddingError,
+} from "./openai-client";
 import { inngest } from "./inngest-client";
 
 /** Compile time only typing for the `movie/cached` event's data; no runtime validation. */
@@ -44,11 +48,20 @@ export const embedMovie = inngest.createFunction(
     const embedding = await step.run("embed", async () => {
       const result = await embedText(embeddingInputText(row));
       if (!result.ok) {
-        reportEmbeddingError("embedMovie", new Error(`movie ${movieId}`));
+        reportEmbeddingError("embedMovie", result.error);
+        if (isPermanentEmbedError(result.error)) {
+          // Bad/exhausted credentials fail identically on every retry; stop here rather
+          // than burning all 3 Inngest attempts on a call that can't succeed.
+          return undefined;
+        }
         throw new Error("Embedding call failed, Inngest will retry");
       }
       return result.value;
     });
+
+    if (!embedding) {
+      return { skipped: true as const };
+    }
 
     await step.run("write-embedding", () =>
       db

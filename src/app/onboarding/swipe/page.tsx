@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { SwipeView } from "../swipe-view";
 
 export const metadata: Metadata = {
-  title: "Swipe onboarding — Movie Recommendation App",
+  title: "Swipe onboarding — TellaMovie",
 };
 
 const ONBOARDING_SWIPE_TARGET = 10;

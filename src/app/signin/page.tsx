@@ -5,7 +5,7 @@ import { Link } from "@/design-system/components/link";
 import { SignInView } from "./sign-in-view";
 
 export const metadata: Metadata = {
-  title: "Sign in — Movie Recommendation App",
+  title: "Sign in — TellaMovie",
 };
 
 /** AC-1, AC-10: the single sign in / sign up entry point, email+password and Google. */
@@ -23,7 +23,7 @@ export default async function SignInPage({
       <Stack gap="xl" align="center" className="w-full max-w-(--container-md)">
         <Stack gap="xs" align="center" className="text-center">
           <Link href="/" variant="nav" className="text-lg font-medium text-ink">
-            Movie Recommendation App
+            TellaMovie
           </Link>
           <p className="text-body">
             Sign in to swipe through movies and get a feed built around your

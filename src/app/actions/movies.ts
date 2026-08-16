@@ -101,6 +101,37 @@ export async function searchMovies(
 }
 
 /**
+ * A public, session free list of TMDB's most popular movies for the signed out home page's
+ * hero collage and "Popular right now" row (spec 0011). Caches every result through the same
+ * list upsert every other movie read uses, through the service role bound data layer, never
+ * the anon key. Returns up to `limit` movies from TMDB's first popularity page.
+ */
+export async function getPublicPopularMovies(
+  limit: number,
+): Promise<Result<MovieList, DataError>> {
+  try {
+    const result = await discoverTmdbPopularMovies(1);
+    if (!result.ok) {
+      reportTmdbError("getPublicPopularMovies", result.error);
+      return err("unknown");
+    }
+
+    const rows = await Promise.all(
+      result.value.results
+        .slice(0, limit)
+        .map((item) => listUpsert(item.id, item)),
+    );
+    return ok({
+      movies: rows.map(toMovie),
+      totalPages: result.value.totalPages,
+    });
+  } catch (error) {
+    Sentry.captureException(error);
+    return err("unknown");
+  }
+}
+
+/**
  * One page of TMDB's popularity ranked movies, caching every result through the list
  * upsert. Defaults to page 1.
  */

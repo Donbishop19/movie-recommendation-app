@@ -6,16 +6,16 @@ import { NavBar } from "@/design-system/components/nav-bar";
 import { Stack } from "@/design-system/components/stack";
 
 export const metadata: Metadata = {
-  title: "Terms of service — Movie Recommendation App",
+  title: "Terms of service — TellaMovie",
   description:
-    "The ground rules for using Movie Recommendation App: your account, your content, and our liability.",
+    "The ground rules for using TellaMovie: your account, your content, and our liability.",
 };
 
 /** AC-3, AC-10 of spec 0010: the public terms of service page. */
 export default function TermsPage() {
   return (
     <div>
-      <NavBar logo="Movie Recommendation App" />
+      <NavBar logo="TellaMovie" />
       <Container as="main" className="max-w-(--container-md) py-section">
         <Stack gap="xl">
           <Stack gap="xxs">

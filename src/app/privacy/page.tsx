@@ -6,16 +6,16 @@ import { NavBar } from "@/design-system/components/nav-bar";
 import { Stack } from "@/design-system/components/stack";
 
 export const metadata: Metadata = {
-  title: "Privacy policy — Movie Recommendation App",
+  title: "Privacy policy — TellaMovie",
   description:
-    "What data Movie Recommendation App collects, how it is used, and how to delete your account and data.",
+    "What data TellaMovie collects, how it is used, and how to delete your account and data.",
 };
 
 /** AC-2, AC-10 of spec 0010: the public privacy policy page. */
 export default function PrivacyPage() {
   return (
     <div>
-      <NavBar logo="Movie Recommendation App" />
+      <NavBar logo="TellaMovie" />
       <Container as="main" className="max-w-(--container-md) py-section">
         <Stack gap="xl">
           <Stack gap="xxs">

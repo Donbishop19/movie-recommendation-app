@@ -5,7 +5,7 @@ import { TabBar, TabBarItem } from "@/design-system/components/tab-bar";
 import { FeedView } from "./feed-view";
 
 export const metadata: Metadata = {
-  title: "Your feed — Movie Recommendation App",
+  title: "Your feed — TellaMovie",
 };
 
 /** AC-4, AC-11: the personalized recommendation feed, with reasons and load more. */
