@@ -20,13 +20,6 @@
   --color-success: #4fbf7a; /* 8.3:1 on canvas */
   --color-error: #ef5a63; /* 5.7:1 on canvas */
 
-  /* Marketing frame: the light backdrop and its dark floating card, signed-out shell only
-     (home, sign in, terms, privacy). Never used inside the authenticated app shell, whose
-     TabBar is fixed to the true viewport edge. */
-  --color-backdrop-from: #f1e9fb;
-  --color-backdrop-via: #d9c6f3;
-  --color-backdrop-to: #b8a2e6;
-
   /* Type: Geist Sans / Geist Mono, loaded as CSS variables in the root layout. */
   --font-sans:
     var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, sans-serif;
@@ -78,7 +71,7 @@
   --radius-sm: 0.25rem; /* inputs, buttons */
   --radius-md: 0.5rem; /* small surfaces, dialogs */
   --radius-lg: 1rem; /* poster cards, the hero spotlight */
-  --radius-xl: 2rem; /* the marketing frame's floating card */
+  --radius-xl: 2rem; /* reserved, not currently used */
   --radius-full: 9999px; /* pills, avatars, chips */
 
   /* Scrim: canvas repeated as its own token so gradient overlays and badges sitting on top
@@ -129,17 +122,4 @@ body {
 
 * {
   border-color: var(--color-border);
-}
-
-/* Marketing frame backdrop: the light gradient behind the floating dark card on the
-   signed-out shell (home, sign in, terms, privacy) only. Decorative, no text sits directly
-   on it, so it carries no contrast requirement of its own. Never applied to the authenticated
-   app shell, whose fixed TabBar needs the true (dark) viewport edge. */
-.marketing-backdrop {
-  background: radial-gradient(
-    120% 100% at 50% -10%,
-    var(--color-backdrop-from) 0%,
-    var(--color-backdrop-via) 55%,
-    var(--color-backdrop-to) 100%
-  );
 }

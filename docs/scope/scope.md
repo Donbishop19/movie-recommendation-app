@@ -21,7 +21,7 @@ _You are in charge. Every box below is a **suggestion**, not a gate: run any, sk
 | 8   | Letterboxd CSV import onboarding | Slice 2    | done        |
 | 9   | Vibe search                      | Slice 3    | in-progress |
 | 10  | Account & privacy settings       | Slice 4    | done        |
-| 11  | Public landing page & SEO        | Slice 5    | in-progress |
+| 11  | Public landing page & SEO        | Slice 5    | done        |
 
 ## Foundations
 
@@ -168,12 +168,19 @@ Privacy policy and terms pages, plus account controls: sign out, delete account,
 
 ### 11. Public landing page & SEO
 
-A signed-out marketing page explaining the product, with basic on-page SEO (metadata, sitemap, social cards), built on the established design system.
-**Done when:** the landing page renders signed out, has page metadata and a sitemap entry, and links into sign in.
+A signed-out marketing page explaining the product, with basic on-page SEO (metadata, sitemap, social cards), redesigned to read close to letterboxd.com: a full bleed dark page, a real poster collage hero, and a real "Popular right now" poster row, built on the established design system and accent color.
+**Done when:** the home page renders full bleed dark with a real poster collage hero and popular row, keeps page metadata, sitemap entry, and sign in links working, and `design.md` reflects the new signed out shell direction.
 
-- [x] Build it: `/develop public landing page & SEO` · code in `src/app/page.tsx`, `src/app/layout.tsx`, `src/app/sitemap.ts`, `src/app/robots.ts`, `src/app/opengraph-image.tsx`
+- [x] Design it (spec): `/architect letterboxd inspired landing page redesign` · spec [0011](../specs/0011-letterboxd-inspired-landing-redesign/index.md)
+- [x] Build it: `/develop public landing page & SEO` · code in `src/app/actions/movies.ts`, `src/design-system/components/poster-wall.tsx`, `src/app/page.tsx`, `src/design-system/tokens.css`, `design.md`
+  - [x] Public popular movies data path: new `getPublicPopularMovies` Server Action, no session required, satisfies AC-4
+  - [x] `PosterWall` (hero collage) and a "Popular right now" poster row, reusing existing Card/MoviePoster/Badge, satisfies AC-2, AC-3, AC-10
+  - [x] Home page rebuild: full bleed dark canvas, shared `NavBar`, hourly ISR, restyled How it works/CTA/footer, satisfies AC-1, AC-5, AC-6, AC-7, AC-8, AC-9
+  - [x] Design system cleanup: remove `.marketing-backdrop`/backdrop tokens, rewrite `design.md`'s signed out shell section, satisfies AC-11
 - [x] Verify it: `/check verify public landing page & SEO`
-- [x] Test it: `/test public landing page & SEO` (project gate: typecheck + `/check verify`, no automated suite; see `test-preferences.json`)
+- [ ] Test it: `/test public landing page & SEO` (project gate: typecheck + `/check verify`, no automated suite; see `test-preferences.json`)
+
+_Previously built and verified without a spec (the 2026-08-15 lavender marketing card rebrand); spec 0011 replaces that direction._
 
 ## Deferred
 

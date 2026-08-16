@@ -1,9 +1,9 @@
 ---
 name: mobile-first-streaming-design-system
-source: derived, reference image (docs/specs/0007-mobile-first-streaming-redesign); recolored to a navy/blue palette and a marketing-frame pattern on 2026-08-15 per a second reference image, brand renamed to TellaMovie
-character: "A dark, mobile first streaming app: a cool near black canvas, one confident blue accent, a hero spotlight up top on the feed, and a persistent bottom tab bar on the authenticated shell. Reads as a movie app in your pocket, not a desktop dashboard. The signed out shell additionally floats its content as a rounded dark card on a light lavender backdrop (2026-08-15 rebrand)."
+source: derived, reference image (docs/specs/0007-mobile-first-streaming-redesign); recolored to a navy/blue palette on 2026-08-15, brand renamed to TellaMovie; signed out shell rebuilt full bleed dark with a real poster collage per docs/specs/0011-letterboxd-inspired-landing-redesign
+character: "A dark, mobile first streaming app: a cool near black canvas, one confident blue accent, a hero spotlight up top on the feed, and a persistent bottom tab bar on the authenticated shell. Reads as a movie app in your pocket, not a desktop dashboard. The signed out shell reads the same way: full bleed dark canvas under a sticky NavBar, its home page hero built from a real poster collage pulled from the app's own catalog, close to how letterboxd.com reads."
 tokens: "real values live in src/design-system/tokens.css (Tailwind v4's @theme, no tailwind.config.js); read them there, never duplicated here"
-contrast: "body 9.0:1 / ink 17.4:1 / muted 6.2:1 / accent 5.9:1, all on canvas; on-accent 5.8:1 on accent; border 3.5:1 on canvas, 3.1:1 on surface. Recolored and reverified 2026-08-15 (amber → blue rebrand); the marketing backdrop gradient is decorative only, no text sits directly on it, so it carries no contrast number of its own. See docs/specs/0007-mobile-first-streaming-redesign/index.md for the prior amber-era verification record."
+contrast: "body 9.0:1 / ink 17.4:1 / muted 6.2:1 / accent 5.9:1, all on canvas; on-accent 5.8:1 on accent; border 3.5:1 on canvas, 3.1:1 on surface. Recolored and reverified 2026-08-15 (amber → blue rebrand). See docs/specs/0007-mobile-first-streaming-redesign/index.md for the prior amber-era verification record."
 ---
 
 ## Build mandate
@@ -25,16 +25,18 @@ width column at every viewport size, not a desktop dashboard that happens to als
 phone. Low chrome carries over: hairline borders over shadows for most separation, a shadow
 reserved for genuinely elevated surfaces (dialogs, dropdowns, toasts).
 
-The 2026-08-15 rebrand changed the signed out shell specifically (home, sign in, terms, privacy):
-its content now floats as one or more rounded (`radius-xl`) dark cards on a light lavender
-gradient backdrop (`.marketing-backdrop`, `--color-backdrop-from/via/to` in tokens.css), instead
-of a full bleed dark page under a sticky `NavBar`. This is a page chrome change only: text inside
-each card still uses the same dark-surface ink/body/muted ladder as everywhere else in the app,
-so no second (light mode) text ladder exists and every existing AA verification still holds. The
-backdrop is decorative and never carries text directly. This pattern is deliberately scoped to the
-signed out shell and must never wrap the authenticated shell: its `TabBar` is fixed to the true
-viewport bottom, and a page level margin would visually detach it from the edge it needs to sit
-flush against.
+Spec 0011 (2026-08-16) rebuilt the signed out shell's home page specifically: full bleed dark
+canvas under a sticky `NavBar`, the same header already used on sign in, terms, and privacy,
+replacing the 2026-08-15 rebrand's light lavender "floating card" backdrop, a pattern that existed
+only on this one page and is now removed outright (`.marketing-backdrop` and the
+`--color-backdrop-from/via/to` tokens are gone from tokens.css). The home hero is now a real
+poster collage (`PosterWall`, decorative, `aria-hidden`) pulled from the app's own catalog data
+through the public, session free `getPublicPopularMovies`, dark scrimmed so the headline keeps the
+already verified ink on canvas contrast, with a "Popular right now" poster row below it reusing the
+same `Card` / `MoviePoster` / `Badge` pattern the feed's poster grid already uses. Both fall back
+cleanly, a plain dark gradient hero and an omitted row, never a visible error, when the catalog has
+too few cached posters yet (a fresh deploy, before the catalog refresh job has run) or the TMDB
+call fails.
 
 ## Color palette
 
@@ -42,35 +44,31 @@ All values are CSS custom properties in `src/design-system/tokens.css`, consumed
 Tailwind's `@theme` (so `bg-canvas`, `text-ink`, `border-border`, etc. are real utility classes).
 Dark only: these are the only values, there is no light mode variant.
 
-| Token                          | Hex                               | Role                                                                  | Contrast                          |
-| ------------------------------ | --------------------------------- | --------------------------------------------------------------------- | --------------------------------- |
-| `--color-canvas`               | `#0b0f1c`                         | Page background                                                       | —                                 |
-| `--color-scrim`                | `#0b0f1c`                         | Gradient overlays and badges on poster art (added, spec 0007)         | matches canvas                    |
-| `--color-surface`              | `#141b2e`                         | Card, panel, raised area                                              | —                                 |
-| `--color-border`               | `#5b6892`                         | Hairline, divider, input/button outline                               | 3.5:1 on canvas, 3.1:1 on surface |
-| `--color-muted`                | `#8a92ab`                         | Captions, placeholders                                                | 6.2:1 on canvas                   |
-| `--color-body`                 | `#aab2c8`                         | Secondary text                                                        | 9.0:1 on canvas                   |
-| `--color-ink`                  | `#f2f4fb`                         | Primary text, headings                                                | 17.4:1 on canvas                  |
-| `--color-accent`               | `#3491ef`                         | Primary actions, links, focus rings                                   | 5.9:1 on canvas, 5.3:1 on surface |
-| `--color-on-accent`            | `#0a1020`                         | Text/icons on top of the accent fill                                  | 5.8:1 on accent                   |
-| `--color-success`              | `#4fbf7a`                         | Positive status                                                       | 8.3:1 on canvas                   |
-| `--color-error`                | `#ef5a63`                         | Errors, destructive actions                                           | 5.7:1 on canvas                   |
-| `--color-backdrop-from/via/to` | `#f1e9fb` / `#d9c6f3` / `#b8a2e6` | Marketing frame's light gradient (signed out shell, added 2026-08-15) | decorative, no text sits on it    |
+| Token               | Hex       | Role                                                          | Contrast                          |
+| ------------------- | --------- | ------------------------------------------------------------- | --------------------------------- |
+| `--color-canvas`    | `#0b0f1c` | Page background                                               | —                                 |
+| `--color-scrim`     | `#0b0f1c` | Gradient overlays and badges on poster art (added, spec 0007) | matches canvas                    |
+| `--color-surface`   | `#141b2e` | Card, panel, raised area                                      | —                                 |
+| `--color-border`    | `#5b6892` | Hairline, divider, input/button outline                       | 3.5:1 on canvas, 3.1:1 on surface |
+| `--color-muted`     | `#8a92ab` | Captions, placeholders                                        | 6.2:1 on canvas                   |
+| `--color-body`      | `#aab2c8` | Secondary text                                                | 9.0:1 on canvas                   |
+| `--color-ink`       | `#f2f4fb` | Primary text, headings                                        | 17.4:1 on canvas                  |
+| `--color-accent`    | `#3491ef` | Primary actions, links, focus rings                           | 5.9:1 on canvas, 5.3:1 on surface |
+| `--color-on-accent` | `#0a1020` | Text/icons on top of the accent fill                          | 5.8:1 on accent                   |
+| `--color-success`   | `#4fbf7a` | Positive status                                               | 8.3:1 on canvas                   |
+| `--color-error`     | `#ef5a63` | Errors, destructive actions                                   | 5.7:1 on canvas                   |
 
 **Usage rules:** the accent is for primary actions, links, and focus rings only, never for
 decoration or large fills (a whole card in accent, a hero background wash). `--color-scrim` is
 for text and badges sitting on top of image content (the hero spotlight's gradient, the poster
-rating badge), never as a general surface color; it is deliberately the same value as canvas so
-text over a fully opaque scrim keeps the already verified 17.4:1 ink on canvas contrast, fading
-out toward the top of a gradient. One accent hue for the whole system; a second accent is a
-decision, not a default, and none is defined here. On-accent uses dark text on the accent fill
-(mirroring the original amber direction) rather than white text: at this blue's hue, no single
-lightness cleared AA (4.5:1) for both white-on-accent buttons and accent-as-body-text on canvas at
-once, while dark-on-accent clears both roles with one color pair (5.8:1 and 5.9:1) — so buttons
-keep dark text even though the reference image this rebrand followed used white on blue.
-`--color-backdrop-*` is exempt from the "accent is the only saturated color" rule: it is a neutral
-light gradient, not a hue competing with the accent, and it is confined to the signed out shell's
-page background.
+rating badge, the home hero's poster collage), never as a general surface color; it is deliberately
+the same value as canvas so text over a fully opaque scrim keeps the already verified 17.4:1 ink on
+canvas contrast, fading out toward the top of a gradient. One accent hue for the whole system; a
+second accent is a decision, not a default, and none is defined here. On-accent uses dark text on
+the accent fill (mirroring the original amber direction) rather than white text: at this blue's
+hue, no single lightness cleared AA (4.5:1) for both white-on-accent buttons and accent-as-body-text
+on canvas at once, while dark-on-accent clears both roles with one color pair (5.8:1 and 5.9:1) —
+so buttons keep dark text even though the reference image this rebrand followed used white on blue.
 
 ## Typography
 
@@ -105,10 +103,10 @@ scale is the escape hatch for a one off value that still needs to land on the 4p
 
 ## Radius and motion
 
-Five radius steps (`radius-lg` added for spec 0007, `radius-xl` added for the 2026-08-15 rebrand;
-the original three carry over unchanged): `radius-sm` (4px, inputs and buttons), `radius-md` (8px,
-small surfaces and dialogs), `radius-lg` (16px, poster cards and the hero spotlight), `radius-xl`
-(32px, the marketing frame's floating card), `radius-full` (pills, avatars, chips). One standard
+Five radius steps (`radius-lg` added for spec 0007; the original three carry over unchanged):
+`radius-sm` (4px, inputs and buttons), `radius-md` (8px, small surfaces and dialogs), `radius-lg`
+(16px, poster cards and the hero spotlight), `radius-xl` (32px, reserved, not currently used),
+`radius-full` (pills, avatars, chips). One standard
 ease (`ease-standard`, `cubic-bezier(0.4, 0, 0.2, 1)`) for ordinary
 transitions, one spring (`ease-spring`, `cubic-bezier(0.34, 1.56, 0.64, 1)`) reserved for playful
 open/close moments. Three durations as plain CSS variables (referenced via Tailwind's
@@ -125,13 +123,14 @@ disables its animation outright (the loading spinner becomes a pulse, skeletons 
 
 Two page shells now exist, not one:
 
-- **Signed out shell** (home, sign in, terms, privacy): as of the 2026-08-15 rebrand, home sits
-  inside `.marketing-backdrop` — a light lavender gradient page background — with its content
-  floated in one or more rounded (`radius-xl`) dark cards on top, each a wider reading width,
-  centered, holding a vertical `Stack` of sections at `gap-section` rhythm. The plainer chrome
-  (sign in, terms, privacy) still uses the original top `NavBar` (sticky, translucent on scroll)
-  directly on the dark canvas, no lavender frame — the marketing treatment is reserved for the
-  page actually selling the product.
+- **Signed out shell** (home, sign in, terms, privacy): full bleed on the dark canvas under a
+  sticky, translucent-on-scroll top `NavBar` (spec 0011), the same header on every page in this
+  shell, no page level frame or backdrop. Home composes, top to bottom: a hero section (a
+  `PosterWall` poster collage behind a dark scrim, headline, subhead, and CTAs), a "Popular right
+  now" horizontal poster row (`Card` / `MoviePoster` / `Badge`, same pattern as the feed's poster
+  grid), a "How it works" section, a closing CTA, and a footer, each section a full width band on
+  the canvas rather than a floated card. Sign in, terms, and privacy stay plainer: `NavBar` plus a
+  single centered content column.
 - **Authenticated app shell** (onboarding, feed): a `TabBar` fixed to the viewport bottom instead
   of a top `NavBar`, and a `Container` constrained to `max-w-(--container-sm)` (a centered phone
   width column) at every viewport size, not just on small screens. Page content gets bottom
@@ -160,7 +159,8 @@ primitive, `Grid` CSS grid primitive) · `card.tsx` (`Card`, `CardHeader`, `Card
 `CardDescription`, `CardContent`, `CardFooter`, `CardSkeleton`) · `skeleton.tsx` ·
 `image-fallback.tsx` (`ImageFallback`, the missing poster/avatar placeholder, AC-6 of spec 0004) ·
 `hero-spotlight.tsx` (`HeroSpotlight`, added spec 0007: the feed's top ranked recommendation,
-shown large with a gradient overlay and its reason)
+shown large with a gradient overlay and its reason) · `poster-wall.tsx` (`PosterWall`, added spec
+0011: the signed out home hero's decorative, `aria-hidden` poster collage background)
 
 **Navigation** — `nav-bar.tsx` (`NavBar`, the signed out shell's header: takes a logo, `NavItem[]`,
 and an actions slot) · `tab-bar.tsx` (`TabBar`, `TabBarItem`, `TabBarAction`, added spec 0007: the
