@@ -198,6 +198,11 @@ export function SwipeView({ target }: SwipeViewProps) {
                 {current.genres.join(" · ")}
               </p>
             ) : null}
+            {current.synopsis ? (
+              <p className="mt-sm text-sm text-body line-clamp-4">
+                {current.synopsis}
+              </p>
+            ) : null}
           </CardContent>
           <CardFooter className="grid grid-cols-2 gap-sm">
             <Button
