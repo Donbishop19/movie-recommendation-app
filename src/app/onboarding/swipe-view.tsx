@@ -34,7 +34,9 @@ export function SwipeView({ target }: SwipeViewProps) {
   const [swipeCount, setSwipeCount] = useState(0);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [initialError, setInitialError] = useState(false);
-  const [swipePending, setSwipePending] = useState(false);
+  const [pendingAction, setPendingAction] = useState<"like" | "pass" | null>(
+    null,
+  );
   const fetchingMoreRef = useRef(false);
 
   const loadPage = useCallback(async (nextPage: number, isInitial: boolean) => {
@@ -90,13 +92,13 @@ export function SwipeView({ target }: SwipeViewProps) {
 
   async function handleSwipe(action: "like" | "pass") {
     const current = deck[0];
-    if (!current || swipePending) {
+    if (!current || pendingAction) {
       return;
     }
 
-    setSwipePending(true);
+    setPendingAction(action);
     const result = await swipeMovie(Number(current.externalId), action);
-    setSwipePending(false);
+    setPendingAction(null);
 
     if (!result.ok) {
       toast({
@@ -202,7 +204,8 @@ export function SwipeView({ target }: SwipeViewProps) {
               type="button"
               variant="secondary"
               size="lg"
-              isLoading={swipePending}
+              isLoading={pendingAction === "pass"}
+              disabled={pendingAction !== null}
               onClick={() => void handleSwipe("pass")}
             >
               Pass
@@ -210,7 +213,8 @@ export function SwipeView({ target }: SwipeViewProps) {
             <Button
               type="button"
               size="lg"
-              isLoading={swipePending}
+              isLoading={pendingAction === "like"}
+              disabled={pendingAction !== null}
               onClick={() => void handleSwipe("like")}
             >
               Like
